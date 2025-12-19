@@ -2,65 +2,39 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <!-- ✅ Mobile viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Chấm công & tính lương Winsun (Thế Anh)</title>
+  <title>Chấm công & tính lương Winsun (Nội bộ)</title>
 
   <style>
     :root{
-      --bg:#f2f4f7;
-      --card:#ffffff;
-      --line:#e5e7eb;
-      --text:#0f172a;
-      --muted:#64748b;
-      --primary:#2563eb;
-      --success:#16a34a;
-      --danger:#dc2626;
-      --gray:#6b7280;
+      --bg:#f2f4f7; --card:#fff; --line:#e5e7eb;
+      --text:#0f172a; --muted:#64748b;
+      --primary:#2563eb; --success:#16a34a;
+      --danger:#dc2626; --gray:#6b7280;
       --shadow: 0 10px 22px rgba(2,6,23,.08);
       --radius: 14px;
     }
     *{ box-sizing:border-box; }
-    body{
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      padding: 14px;
-      margin: 0;
-      color: var(--text);
-    }
+    body{ font-family: Arial, sans-serif; background:var(--bg); padding:14px; margin:0; color:var(--text); }
     .container{
-      background: var(--card);
-      padding: 14px;
-      border-radius: var(--radius);
-      max-width: 1200px;
-      margin: 0 auto;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--line);
+      background:var(--card);
+      padding:14px;
+      border-radius:var(--radius);
+      max-width:1200px;
+      margin:0 auto;
+      box-shadow:var(--shadow);
+      border:1px solid var(--line);
+      transition: transform .2s ease, box-shadow .2s ease;
     }
-    h2{
-      margin: 0 0 10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      font-size: 18px;
-    }
+    h2{ margin:0 0 10px; font-size:18px; }
 
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     input, select, button{
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: #fff;
-      font-size: 14px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:14px;
     }
     input:focus, select:focus{
       outline:none;
@@ -72,118 +46,138 @@
       border:none;
       cursor:pointer;
       color:#fff;
-      background: var(--primary);
-      font-weight: 700;
-      border-radius: 12px;
+      background:var(--primary);
+      font-weight:700;
+      border-radius:12px;
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
     }
-    button.gray{ background: var(--gray); }
-    button.danger{ background: var(--danger); }
+    button:hover{ filter: brightness(1.05); }
+    button:active{ transform: scale(.98); }
+    button.gray{ background:var(--gray); }
+    button.danger{ background:var(--danger); }
 
-    .muted{ color: var(--muted); font-size: 13px; }
+    .muted{ color:var(--muted); font-size:13px; }
     .box{
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 12px;
-      background: #fafafa;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:12px;
+      background:#fafafa;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
-    .spacer{ height: 10px; }
+    .box:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(2,6,23,.10);
+      border-color: rgba(37,99,235,.25);
+    }
+    .spacer{ height:10px; }
 
-    /* ✅ Tabs */
-    .tabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
+    /* Tabs */
+    .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
     .tabs button{
       background:#fff;
-      color: var(--text);
-      border: 1px solid var(--line);
-      font-weight:700;
+      color:var(--text);
+      border:1px solid var(--line);
+      font-weight:800;
+      transition: transform .15s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+    .tabs button:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(2,6,23,.10);
     }
     .tabs button.active{
-      background: var(--success);
+      background:var(--success);
       color:#fff;
       border:none;
+      box-shadow: 0 10px 24px rgba(22,163,74,.25);
     }
 
-    /* ✅ Tables: cuộn ngang đẹp trên mobile */
+    /* Tables */
     .table-wrap{
       overflow-x:auto;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-    }
-    table{
-      width:100%;
-      border-collapse: collapse;
-      min-width: 980px; /* nhiều cột => mobile cuộn ngang */
+      border:1px solid var(--line);
+      border-radius:var(--radius);
       background:#fff;
     }
+    table{ width:100%; border-collapse:collapse; min-width:980px; background:#fff; }
     th, td{
-      border-bottom: 1px solid var(--line);
-      padding: 10px 8px;
+      border-bottom:1px solid var(--line);
+      padding:10px 8px;
       text-align:center;
-      white-space: nowrap;
-      font-size: 13px;
+      white-space:nowrap;
+      font-size:13px;
     }
-    th{
-      background:#f8fafc;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
+    th{ background:#f8fafc; position:sticky; top:0; z-index:1; }
+    tr td{ transition: background .15s ease; }
     tr:hover td{ background:#f8fafc; }
-    .total td{
-      font-weight: 800;
-      background: #ecfdf5;
+    .total td{ font-weight:900; background:#ecfdf5; }
+
+    /* Flash OK */
+    .flash-ok{ animation: flashOk .55s ease; }
+    @keyframes flashOk{
+      0%{ box-shadow: 0 0 0 0 rgba(22,163,74,.0); }
+      40%{ box-shadow: 0 0 0 8px rgba(22,163,74,.18); }
+      100%{ box-shadow: 0 0 0 0 rgba(22,163,74,.0); }
     }
 
-    /* ✅ Mobile super-optimization */
+    /* Shake */
+    .shake{ animation: shake .25s linear; }
+    @keyframes shake{
+      0%{ transform: translateX(0); }
+      25%{ transform: translateX(-5px); }
+      50%{ transform: translateX(5px); }
+      75%{ transform: translateX(-4px); }
+      100%{ transform: translateX(0); }
+    }
+
+    /* Fade out row */
+    .fade-out{ animation: fadeOut .25s ease forwards; }
+    @keyframes fadeOut{ to{ opacity:0; transform: translateX(6px); } }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 92px;
+      transform: translateX(-50%) translateY(10px);
+      background: rgba(15,23,42,.92);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 999;
+    }
+    .toast.show{ opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Mobile */
     @media (max-width: 768px){
-      body{ padding: 10px; }
-      .container{ padding: 12px; }
+      body{ padding:10px; }
+      .container{ padding:12px; margin-bottom: 92px; }
+      .row{ flex-direction:column; align-items:stretch; }
+      input, select, button{ width:100%; font-size:16px; padding:12px 14px; }
 
-      /* form xếp dọc, nút to dễ bấm */
-      .row{ flex-direction: column; align-items: stretch; }
-      input, select, button{ width:100%; font-size: 16px; padding: 12px 14px; }
-
-      /* tiêu đề gọn */
-      h2{ font-size: 18px; }
-
-      /* tab dính dưới như app */
       .tabs{
-        position: fixed;
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
+        position:fixed;
+        left:10px; right:10px; bottom:10px;
         background: rgba(255,255,255,.95);
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 8px;
+        border:1px solid var(--line);
+        border-radius:16px;
+        padding:8px;
         box-shadow: var(--shadow);
-        z-index: 50;
+        z-index:50;
       }
-      .tabs button{
-        flex: 1;
-        width: auto;
-        padding: 12px 10px;
-        font-size: 14px;
-      }
-
-      /* chừa chỗ cho tab cố định */
-      .container{ margin-bottom: 92px; }
-
-      /* box gọn hơn */
-      .box{ padding: 10px; }
+      .tabs button{ flex:1; width:auto; padding:12px 10px; font-size:14px; }
     }
   </style>
 </head>
 
 <body>
-
 <script>
   // ====== PASSWORD GATE ======
-  const PASSWORD = "Theanh@408";
+  const PASSWORD = "Theanh@408"; // đổi mật khẩu tại đây
   if (localStorage.getItem("auth") !== "ok") {
     const p = prompt("Nhập mật khẩu truy cập:");
     if (p !== PASSWORD) {
@@ -205,7 +199,6 @@
     <span class="muted">Mật khẩu: <b>Theanh@408</b></span>
   </div>
 
-  <!-- Tabs -->
   <div class="tabs" id="mainTabs">
     <button class="active" onclick="showTab('salary', event)">💰 Tính lương</button>
     <button onclick="showTab('history', event)">📜 Lịch sử</button>
@@ -245,17 +238,18 @@
           </select>
 
           <label>Bắt đầu:</label>
-          <input type="number" id="start" value="8" min="0" max="23" />
+          <input type="time" id="start" value="08:00" />
 
           <label>Kết thúc:</label>
-          <input type="number" id="end" value="20" min="0" max="23" />
+          <input type="time" id="end" value="20:00" />
 
           <button onclick="addDay()">➕ Thêm ngày</button>
         </div>
 
         <div class="muted">
-          • Ca đêm qua ngày (vd 20 → 8) tự tính đúng. • Mặc định trừ <b>1 tiếng nghỉ</b>.
-          • Hỗ trợ <b>+10k</b> chỉ khi <b>Ngày thường + Ca ngày + 8→20</b> và đủ giờ.
+          • Nghỉ <b>1 tiếng</b> tại <b>11:45</b> (ca ngày) và <b>23:45</b> (ca đêm).<br/>
+          • Ca đêm qua ngày (vd 20:00 → 08:00) tự tính đúng.<br/>
+          • Hỗ trợ <b>+10k</b> chỉ khi <b>Ngày thường + Ca ngày + 08:00→20:00</b> và đủ <b>11 giờ làm</b> (sau nghỉ).
         </div>
       </div>
 
@@ -301,7 +295,7 @@
     <div class="spacer"></div>
 
     <div class="table-wrap">
-      <table style="min-width: 860px;">
+      <table style="min-width: 900px;">
         <thead>
           <tr>
             <th>Giờ ghi</th>
@@ -361,7 +355,7 @@
     <div class="spacer"></div>
 
     <div class="table-wrap">
-      <table style="min-width: 700px;">
+      <table style="min-width: 720px;">
         <thead>
           <tr>
             <th>Đối tượng</th>
@@ -377,62 +371,96 @@
   </div>
 </div>
 
+<div id="toast" class="toast">OK</div>
+
 <script>
-  // ========= Load + Normalize data =========
+  // ========= Data =========
   let data = JSON.parse(localStorage.getItem("winsun")) || { workers: {}, history: [] };
   if (!data || typeof data !== "object") data = { workers: {}, history: [] };
   if (!data.workers) data.workers = {};
   if (!data.history) data.history = [];
 
   for (const id of Object.keys(data.workers)) {
-    const w = data.workers[id];
-    if (!w) data.workers[id] = { name: "(unknown)", days: [] };
+    if (!data.workers[id]) data.workers[id] = { name: "(unknown)", days: [] };
     if (!data.workers[id].days) data.workers[id].days = [];
   }
 
   let current = null;
 
   function save(){ localStorage.setItem("winsun", JSON.stringify(data)); }
-
-  function logout(){
-    localStorage.removeItem("auth");
-    location.reload();
-  }
-
+  function logout(){ localStorage.removeItem("auth"); location.reload(); }
   function toISO(d){ return d.toISOString().slice(0,10); }
 
+  // ========= UI FX =========
+  function showToast(msg){
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 1200);
+  }
+  function flashOk(){
+    const box = document.querySelector("#workArea .box");
+    if(!box) return;
+    box.classList.remove("flash-ok");
+    void box.offsetWidth;
+    box.classList.add("flash-ok");
+  }
+  function shakeWorkArea(){
+    const wa = document.getElementById("workArea");
+    if(!wa) return;
+    wa.classList.remove("shake");
+    void wa.offsetWidth;
+    wa.classList.add("shake");
+  }
+
+  // ========= Helpers =========
   function getThu(dateStr){
     const d = new Date(dateStr);
     const map = ["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"];
     return map[d.getDay()];
   }
+  function parseTimeToMin(t){
+    const [hh, mm] = t.split(":").map(Number);
+    return (hh*60 + mm);
+  }
 
-  function calcHours(start, end){
-    const raw = (end <= start) ? (24 - start) + end : (end - start);
-    return Math.max(0, raw - 1);
+  // ✅ Tính phút làm thực tế:
+  // - ca ngày: nghỉ 11:45 → 12:45
+  // - ca đêm: nghỉ 23:45 → 00:45
+  // - chỉ trừ nếu ca làm cắt qua khoảng nghỉ
+  function calcWorkedMinutes(startStr, endStr, shiftType){
+    const start = parseTimeToMin(startStr);
+    let end = parseTimeToMin(endStr);
+    if (end <= start) end += 1440; // qua ngày
+
+    let breakStart = (shiftType === "dem") ? (23*60 + 45) : (11*60 + 45);
+    let breakEnd = breakStart + 60;
+
+    // đưa break về cùng timeline với ca
+    if (breakStart < start) { breakStart += 1440; breakEnd += 1440; }
+
+    const overlap = Math.max(0, Math.min(end, breakEnd) - Math.max(start, breakStart));
+    const worked = (end - start) - overlap;
+    return Math.max(0, worked);
   }
 
   function getWeekRange(dateStr){
     const d = new Date(dateStr);
-    const day = d.getDay(); // 0=CN, 1=T2
+    const day = d.getDay();
     const diff = (day === 0 ? -6 : 1) - day;
-
-    const monday = new Date(d);
-    monday.setDate(d.getDate() + diff);
-
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-
+    const monday = new Date(d); monday.setDate(d.getDate()+diff);
+    const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
     return { start: toISO(monday), end: toISO(sunday) };
   }
-
   function getMonthRange(dateStr){
     const d = new Date(dateStr);
     const start = new Date(d.getFullYear(), d.getMonth(), 1);
-    const end = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    const end = new Date(d.getFullYear(), d.getMonth()+1, 0);
     return { start: toISO(start), end: toISO(end) };
   }
 
+  // ========= Tabs =========
   function showTab(tab, ev){
     document.getElementById("tab-salary").style.display = "none";
     document.getElementById("tab-history").style.display = "none";
@@ -443,6 +471,7 @@
     if (ev && ev.target) ev.target.classList.add("active");
   }
 
+  // ========= Workers =========
   function renderWorkerTabs(){
     const wrap = document.getElementById("workerTabs");
     wrap.innerHTML = "";
@@ -470,10 +499,16 @@
 
   function addWorker(){
     const name = document.getElementById("workerName").value.trim();
-    if (!name) return alert("Nhập tên công nhân");
+    if (!name){
+      showToast("Nhập tên công nhân");
+      shakeWorkArea();
+      return;
+    }
 
     if (Object.values(data.workers).some(w => (w?.name || "").toLowerCase() === name.toLowerCase())){
-      return alert("Tên công nhân đã tồn tại");
+      showToast("Tên đã tồn tại");
+      shakeWorkArea();
+      return;
     }
 
     const id = "CN" + String(Object.keys(data.workers).length + 1).padStart(3, "0");
@@ -482,25 +517,34 @@
     save();
     document.getElementById("workerName").value = "";
     renderWorkerTabs();
+    showToast("✅ Đã tạo công nhân");
   }
 
   function selectWorker(id){
     current = id;
     loadWorker();
     renderWorkerTabs();
+    showToast("Đang chọn " + id);
   }
 
+  // ========= Add Day =========
   function addDay(){
-    if (!current || !data.workers[current]) return alert("Chọn hoặc tạo công nhân trước");
+    if (!current || !data.workers[current]) {
+      showToast("Chưa chọn công nhân");
+      shakeWorkArea();
+      return;
+    }
 
     const d = document.getElementById("date").value || toISO(new Date());
     const dayType = document.getElementById("dayType").value;     // thuong|chunhat
     const shiftType = document.getElementById("shiftType").value; // ngay|dem
-    const s = +document.getElementById("start").value;
-    const e = +document.getElementById("end").value;
+    const sStr = document.getElementById("start").value || "08:00";
+    const eStr = document.getElementById("end").value || "20:00";
 
-    const h = calcHours(s, e);
+    const workedMin = calcWorkedMinutes(sStr, eStr, shiftType);
+    const workedHours = workedMin / 60;
 
+    // rate theo bảng bạn chốt
     let hcRate = 0, tcRate = 0;
     if (dayType === "thuong"){
       hcRate = (shiftType === "ngay") ? 25000 : 30000;
@@ -510,18 +554,29 @@
       tcRate = 0;
     }
 
-    const hcHours = Math.min(8, h);
-    const tcHours = Math.max(0, h - 8);
+    // HC tối đa 8h, TC phần còn lại
+    const hcHours = Math.min(8, workedHours);
+    const tcHours = Math.max(0, workedHours - 8);
 
-    const hc = hcHours * hcRate;
-    const tc = tcHours * tcRate;
+    // pro-rate theo phút (làm lẻ phút vẫn đúng)
+    const hc = Math.round(hcHours * hcRate);
+    const tc = Math.round(tcHours * tcRate);
 
-    const bonus = (dayType === "thuong" && shiftType === "ngay" && s === 8 && e === 20 && h >= 11) ? 10000 : 0;
+    // +10k: ngày thường + ca ngày + đúng 08:00 -> 20:00 + đủ 11h (660 phút) sau nghỉ
+    const bonus = (dayType === "thuong" && shiftType === "ngay" && sStr === "08:00" && eStr === "20:00" && workedMin >= 660)
+      ? 10000 : 0;
+
     const total = hc + tc + bonus;
 
     data.workers[current].days.push({
-      d, thu: getThu(d), start: s, end: e,
-      dayType, shiftType, hc, tc, bonus, total
+      d,
+      thu: getThu(d),
+      start: sStr,
+      end: eStr,
+      dayType,
+      shiftType,
+      workedMin,
+      hc, tc, bonus, total
     });
 
     // history: chỉ giữ hôm nay
@@ -530,13 +585,16 @@
       time: new Date().toLocaleTimeString(),
       date: d, thu: getThu(d),
       id: current, name: data.workers[current].name,
-      shift: shiftType, start: s, end: e
+      shift: shiftType, start: sStr, end: eStr
     });
     data.history = data.history.filter(x => x.date === today);
 
     save();
     loadWorker();
     renderHistory();
+
+    flashOk();
+    showToast("✅ Đã thêm ngày");
   }
 
   function loadWorker(){
@@ -548,8 +606,8 @@
     days.forEach((x,i) => {
       const d = x.d || "";
       const thu = x.thu || (d ? getThu(d) : "");
-      const start = (x.start ?? "");
-      const end = (x.end ?? "");
+      const start = x.start ?? "";
+      const end = x.end ?? "";
       const hc = x.hc || 0;
       const tc = x.tc || 0;
       const bonus = x.bonus || 0;
@@ -559,8 +617,8 @@
         <tr>
           <td>${thu}</td>
           <td>${d}</td>
-          <td>${start}h</td>
-          <td>${end}h</td>
+          <td>${start}</td>
+          <td>${end}</td>
           <td>${current}</td>
           <td>${hc.toLocaleString()}</td>
           <td>${tc.toLocaleString()}</td>
@@ -580,11 +638,25 @@
 
   function delDay(i){
     if (!current || !data.workers[current]) return;
-    data.workers[current].days.splice(i,1);
-    save();
-    loadWorker();
+
+    const tr = document.querySelectorAll("#rows tr")[i];
+    if (tr){
+      tr.classList.add("fade-out");
+      setTimeout(()=>{
+        data.workers[current].days.splice(i,1);
+        save();
+        loadWorker();
+        showToast("🗑️ Đã xoá");
+      }, 220);
+    } else {
+      data.workers[current].days.splice(i,1);
+      save();
+      loadWorker();
+      showToast("🗑️ Đã xoá");
+    }
   }
 
+  // ========= History =========
   function renderHistory(){
     const tb = document.getElementById("history");
     const list = data.history || [];
@@ -595,15 +667,16 @@
         <td>${h.id}</td>
         <td>${h.name}</td>
         <td>${h.shift === "ngay" ? "Ca ngày" : "Ca đêm"}</td>
-        <td>${h.start}h</td>
-        <td>${h.end}h</td>
+        <td>${h.start}</td>
+        <td>${h.end}</td>
       </tr>
     `).join("");
   }
 
+  // ========= Stat =========
   function statDay(){
     const d = document.getElementById("statDate").value;
-    if (!d) return alert("Chọn ngày");
+    if (!d) return showToast("Chọn ngày");
 
     let hc=0, tc=0, b=0, sum=0;
     Object.values(data.workers).forEach(w => {
@@ -625,6 +698,7 @@
         <td>${b.toLocaleString()}</td>
         <td><b>${sum.toLocaleString()}</b></td>
       </tr>`;
+    showToast("📊 Đã thống kê ngày");
   }
 
   function syncWeekRange(){
@@ -639,7 +713,7 @@
 
   function statWeek(){
     const pick = document.getElementById("statWeekPick").value;
-    if (!pick) return alert("Chọn 1 ngày trong tuần");
+    if (!pick) return showToast("Chọn ngày trong tuần");
 
     const r = getWeekRange(pick);
     document.getElementById("statWeekFrom").value = r.start;
@@ -665,6 +739,7 @@
         <td>${b.toLocaleString()}</td>
         <td><b>${sum.toLocaleString()}</b></td>
       </tr>`;
+    showToast("📊 Đã thống kê tuần");
   }
 
   function syncMonthRange(){
@@ -679,7 +754,7 @@
 
   function statMonth(){
     const pick = document.getElementById("statMonthPick").value;
-    if (!pick) return alert("Chọn 1 ngày trong tháng");
+    if (!pick) return showToast("Chọn ngày trong tháng");
 
     const r = getMonthRange(pick);
     document.getElementById("statMonthFrom").value = r.start;
@@ -705,16 +780,20 @@
         <td>${b.toLocaleString()}</td>
         <td><b>${sum.toLocaleString()}</b></td>
       </tr>`;
+    showToast("📊 Đã thống kê tháng");
   }
 
+  // ========= Init =========
   (function init(){
     const today = toISO(new Date());
     document.getElementById("date").value = today;
+
     document.getElementById("statDate").value = today;
     document.getElementById("statWeekPick").value = today;
     document.getElementById("statMonthPick").value = today;
     syncWeekRange();
     syncMonthRange();
+
     renderWorkerTabs();
     renderHistory();
   })();
