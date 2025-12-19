@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <!-- ✅ Mobile viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Chấm công & tính lương Winsun (Thế Anh)</title>
+
+  <style>
+    :root{
+      --bg:#f2f4f7;
+      --card:#ffffff;
+      --line:#e5e7eb;
+      --text:#0f172a;
+      --muted:#64748b;
+      --primary:#2563eb;
+      --success:#16a34a;
+      --danger:#dc2626;
+      --gray:#6b7280;
+      --shadow: 0 10px 22px rgba(2,6,23,.08);
+      --radius: 14px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      padding: 14px;
+      margin: 0;
+      color: var(--text);
+    }
+    .container{
+      background: var(--card);
+      padding: 14px;
+      border-radius: var(--radius);
+      max-width: 1200px;
+      margin: 0 auto;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+    h2{
+      margin: 0 0 10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      font-size: 18px;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    input, select, button{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 14px;
+    }
+    input:focus, select:focus{
+      outline:none;
+      border-color: rgba(37,99,235,.55);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+
+    button{
+      border:none;
+      cursor:pointer;
+      color:#fff;
+      background: var(--primary);
+      font-weight: 700;
+      border-radius: 12px;
+    }
+    button.gray{ background: var(--gray); }
+    button.danger{ background: var(--danger); }
+
+    .muted{ color: var(--muted); font-size: 13px; }
+    .box{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #fafafa;
+    }
+    .spacer{ height: 10px; }
+
+    /* ✅ Tabs */
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .tabs button{
+      background:#fff;
+      color: var(--text);
+      border: 1px solid var(--line);
+      font-weight:700;
+    }
+    .tabs button.active{
+      background: var(--success);
+      color:#fff;
+      border:none;
+    }
+
+    /* ✅ Tables: cuộn ngang đẹp trên mobile */
+    .table-wrap{
+      overflow-x:auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      min-width: 980px; /* nhiều cột => mobile cuộn ngang */
+      background:#fff;
+    }
+    th, td{
+      border-bottom: 1px solid var(--line);
+      padding: 10px 8px;
+      text-align:center;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+    th{
+      background:#f8fafc;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr:hover td{ background:#f8fafc; }
+    .total td{
+      font-weight: 800;
+      background: #ecfdf5;
+    }
+
+    /* ✅ Mobile super-optimization */
+    @media (max-width: 768px){
+      body{ padding: 10px; }
+      .container{ padding: 12px; }
+
+      /* form xếp dọc, nút to dễ bấm */
+      .row{ flex-direction: column; align-items: stretch; }
+      input, select, button{ width:100%; font-size: 16px; padding: 12px 14px; }
+
+      /* tiêu đề gọn */
+      h2{ font-size: 18px; }
+
+      /* tab dính dưới như app */
+      .tabs{
+        position: fixed;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        background: rgba(255,255,255,.95);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 8px;
+        box-shadow: var(--shadow);
+        z-index: 50;
+      }
+      .tabs button{
+        flex: 1;
+        width: auto;
+        padding: 12px 10px;
+        font-size: 14px;
+      }
+
+      /* chừa chỗ cho tab cố định */
+      .container{ margin-bottom: 92px; }
+
+      /* box gọn hơn */
+      .box{ padding: 10px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<script>
+  // ====== PASSWORD GATE ======
+  const PASSWORD = "Theanh@408";
+  if (localStorage.getItem("auth") !== "ok") {
+    const p = prompt("Nhập mật khẩu truy cập:");
+    if (p !== PASSWORD) {
+      alert("Sai mật khẩu");
+      document.body.innerHTML = "";
+    } else {
+      localStorage.setItem("auth", "ok");
+    }
+  }
+</script>
+
+<div class="container">
+  <h2>🔐 CHẤM CÔNG & TÍNH LƯƠNG WINSUN (NỘI BỘ)</h2>
+
+  <div class="row">
+    <input id="workerName" placeholder="Nhập tên công nhân" />
+    <button onclick="addWorker()">➕ Tạo công nhân</button>
+    <button class="gray" onclick="logout()">Đăng xuất</button>
+    <span class="muted">Mật khẩu: <b>Theanh@408</b></span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="mainTabs">
+    <button class="active" onclick="showTab('salary', event)">💰 Tính lương</button>
+    <button onclick="showTab('history', event)">📜 Lịch sử</button>
+    <button onclick="showTab('stat', event)">📊 Thống kê</button>
+  </div>
+
+  <div class="spacer"></div>
+
+  <!-- TAB: Salary -->
+  <div id="tab-salary">
+    <div class="box">
+      <div class="row">
+        <b>Danh sách công nhân</b>
+        <span class="muted">(Mỗi công nhân là 1 tab riêng)</span>
+      </div>
+      <div class="row" id="workerTabs"></div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div id="workArea" style="display:none;">
+      <div class="box">
+        <div class="row">
+          <label>Ngày:</label>
+          <input type="date" id="date" />
+
+          <label>Loại ngày:</label>
+          <select id="dayType">
+            <option value="thuong">Ngày thường</option>
+            <option value="chunhat">Chủ nhật</option>
+          </select>
+
+          <label>Ca:</label>
+          <select id="shiftType">
+            <option value="ngay">Ca ngày</option>
+            <option value="dem">Ca đêm</option>
+          </select>
+
+          <label>Bắt đầu:</label>
+          <input type="number" id="start" value="8" min="0" max="23" />
+
+          <label>Kết thúc:</label>
+          <input type="number" id="end" value="20" min="0" max="23" />
+
+          <button onclick="addDay()">➕ Thêm ngày</button>
+        </div>
+
+        <div class="muted">
+          • Ca đêm qua ngày (vd 20 → 8) tự tính đúng. • Mặc định trừ <b>1 tiếng nghỉ</b>.
+          • Hỗ trợ <b>+10k</b> chỉ khi <b>Ngày thường + Ca ngày + 8→20</b> và đủ giờ.
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Thứ</th>
+              <th>Ngày</th>
+              <th>Bắt đầu</th>
+              <th>Kết thúc</th>
+              <th>Mã CN</th>
+              <th>HC</th>
+              <th>TC</th>
+              <th>Hỗ trợ</th>
+              <th>Tổng</th>
+              <th>Xóa</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+          <tfoot>
+            <tr class="total">
+              <td colspan="5">TỔNG</td>
+              <td id="tHC">0</td>
+              <td id="tTC">0</td>
+              <td id="tB">0</td>
+              <td id="tSum">0</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: History -->
+  <div id="tab-history" style="display:none;">
+    <h3>📜 Lịch sử ghi công hôm nay</h3>
+    <div class="muted">Chỉ hiển thị những dòng ghi công có <b>ngày = hôm nay</b>.</div>
+
+    <div class="spacer"></div>
+
+    <div class="table-wrap">
+      <table style="min-width: 860px;">
+        <thead>
+          <tr>
+            <th>Giờ ghi</th>
+            <th>Thứ - Ngày</th>
+            <th>Mã CN</th>
+            <th>Tên</th>
+            <th>Ca</th>
+            <th>Bắt đầu</th>
+            <th>Kết thúc</th>
+          </tr>
+        </thead>
+        <tbody id="history"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: Stat -->
+  <div id="tab-stat" style="display:none;">
+    <h3>📊 Thống kê</h3>
+
+    <div class="box">
+      <div class="row">
+        <b>Theo ngày</b>
+        <input type="date" id="statDate" />
+        <button onclick="statDay()">Xem</button>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="row">
+        <b>Theo tuần (T2 → CN)</b>
+        <input type="date" id="statWeekPick" onchange="syncWeekRange()" />
+        <span class="muted">Từ:</span>
+        <input type="date" id="statWeekFrom" readonly />
+        <span class="muted">Đến:</span>
+        <input type="date" id="statWeekTo" readonly />
+        <button onclick="statWeek()">Xem</button>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="row">
+        <b>Theo tháng (đầu → cuối tháng)</b>
+        <input type="date" id="statMonthPick" onchange="syncMonthRange()" />
+        <span class="muted">Từ:</span>
+        <input type="date" id="statMonthFrom" readonly />
+        <span class="muted">Đến:</span>
+        <input type="date" id="statMonthTo" readonly />
+        <button onclick="statMonth()">Xem</button>
+      </div>
+
+      <div class="muted">
+        • Chọn 1 ngày bất kỳ: tuần tự ra <b>T2→CN</b>, tháng tự ra <b>đầu→cuối tháng</b>.
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="table-wrap">
+      <table style="min-width: 700px;">
+        <thead>
+          <tr>
+            <th>Đối tượng</th>
+            <th>HC</th>
+            <th>TC</th>
+            <th>Hỗ trợ</th>
+            <th>Tổng</th>
+          </tr>
+        </thead>
+        <tbody id="statTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ========= Load + Normalize data =========
+  let data = JSON.parse(localStorage.getItem("winsun")) || { workers: {}, history: [] };
+  if (!data || typeof data !== "object") data = { workers: {}, history: [] };
+  if (!data.workers) data.workers = {};
+  if (!data.history) data.history = [];
+
+  for (const id of Object.keys(data.workers)) {
+    const w = data.workers[id];
+    if (!w) data.workers[id] = { name: "(unknown)", days: [] };
+    if (!data.workers[id].days) data.workers[id].days = [];
+  }
+
+  let current = null;
+
+  function save(){ localStorage.setItem("winsun", JSON.stringify(data)); }
+
+  function logout(){
+    localStorage.removeItem("auth");
+    location.reload();
+  }
+
+  function toISO(d){ return d.toISOString().slice(0,10); }
+
+  function getThu(dateStr){
+    const d = new Date(dateStr);
+    const map = ["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"];
+    return map[d.getDay()];
+  }
+
+  function calcHours(start, end){
+    const raw = (end <= start) ? (24 - start) + end : (end - start);
+    return Math.max(0, raw - 1);
+  }
+
+  function getWeekRange(dateStr){
+    const d = new Date(dateStr);
+    const day = d.getDay(); // 0=CN, 1=T2
+    const diff = (day === 0 ? -6 : 1) - day;
+
+    const monday = new Date(d);
+    monday.setDate(d.getDate() + diff);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    return { start: toISO(monday), end: toISO(sunday) };
+  }
+
+  function getMonthRange(dateStr){
+    const d = new Date(dateStr);
+    const start = new Date(d.getFullYear(), d.getMonth(), 1);
+    const end = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    return { start: toISO(start), end: toISO(end) };
+  }
+
+  function showTab(tab, ev){
+    document.getElementById("tab-salary").style.display = "none";
+    document.getElementById("tab-history").style.display = "none";
+    document.getElementById("tab-stat").style.display = "none";
+    document.getElementById("tab-" + tab).style.display = "block";
+
+    document.querySelectorAll("#mainTabs button").forEach(b => b.classList.remove("active"));
+    if (ev && ev.target) ev.target.classList.add("active");
+  }
+
+  function renderWorkerTabs(){
+    const wrap = document.getElementById("workerTabs");
+    wrap.innerHTML = "";
+
+    const ids = Object.keys(data.workers);
+    if (ids.length === 0){
+      wrap.innerHTML = `<span class="muted">Chưa có công nhân. Nhập tên và bấm "Tạo công nhân".</span>`;
+      document.getElementById("workArea").style.display = "none";
+      current = null;
+      return;
+    }
+
+    ids.forEach(id => {
+      const btn = document.createElement("button");
+      btn.className = (id === current) ? "" : "gray";
+      btn.textContent = `${id} - ${data.workers[id].name}`;
+      btn.onclick = () => selectWorker(id);
+      wrap.appendChild(btn);
+    });
+
+    if (!current || !data.workers[current]) current = ids[0];
+    document.getElementById("workArea").style.display = "block";
+    loadWorker();
+  }
+
+  function addWorker(){
+    const name = document.getElementById("workerName").value.trim();
+    if (!name) return alert("Nhập tên công nhân");
+
+    if (Object.values(data.workers).some(w => (w?.name || "").toLowerCase() === name.toLowerCase())){
+      return alert("Tên công nhân đã tồn tại");
+    }
+
+    const id = "CN" + String(Object.keys(data.workers).length + 1).padStart(3, "0");
+    data.workers[id] = { name, days: [] };
+    current = id;
+    save();
+    document.getElementById("workerName").value = "";
+    renderWorkerTabs();
+  }
+
+  function selectWorker(id){
+    current = id;
+    loadWorker();
+    renderWorkerTabs();
+  }
+
+  function addDay(){
+    if (!current || !data.workers[current]) return alert("Chọn hoặc tạo công nhân trước");
+
+    const d = document.getElementById("date").value || toISO(new Date());
+    const dayType = document.getElementById("dayType").value;     // thuong|chunhat
+    const shiftType = document.getElementById("shiftType").value; // ngay|dem
+    const s = +document.getElementById("start").value;
+    const e = +document.getElementById("end").value;
+
+    const h = calcHours(s, e);
+
+    let hcRate = 0, tcRate = 0;
+    if (dayType === "thuong"){
+      hcRate = (shiftType === "ngay") ? 25000 : 30000;
+      tcRate = (shiftType === "ngay") ? 30000 : 35000;
+    } else {
+      hcRate = (shiftType === "ngay") ? 35000 : 45000;
+      tcRate = 0;
+    }
+
+    const hcHours = Math.min(8, h);
+    const tcHours = Math.max(0, h - 8);
+
+    const hc = hcHours * hcRate;
+    const tc = tcHours * tcRate;
+
+    const bonus = (dayType === "thuong" && shiftType === "ngay" && s === 8 && e === 20 && h >= 11) ? 10000 : 0;
+    const total = hc + tc + bonus;
+
+    data.workers[current].days.push({
+      d, thu: getThu(d), start: s, end: e,
+      dayType, shiftType, hc, tc, bonus, total
+    });
+
+    // history: chỉ giữ hôm nay
+    const today = toISO(new Date());
+    data.history.unshift({
+      time: new Date().toLocaleTimeString(),
+      date: d, thu: getThu(d),
+      id: current, name: data.workers[current].name,
+      shift: shiftType, start: s, end: e
+    });
+    data.history = data.history.filter(x => x.date === today);
+
+    save();
+    loadWorker();
+    renderHistory();
+  }
+
+  function loadWorker(){
+    if (!current || !data.workers[current]) return;
+
+    const days = data.workers[current].days || [];
+    let html = "", sHC=0, sTC=0, sB=0, sT=0;
+
+    days.forEach((x,i) => {
+      const d = x.d || "";
+      const thu = x.thu || (d ? getThu(d) : "");
+      const start = (x.start ?? "");
+      const end = (x.end ?? "");
+      const hc = x.hc || 0;
+      const tc = x.tc || 0;
+      const bonus = x.bonus || 0;
+      const total = x.total || (hc + tc + bonus);
+
+      html += `
+        <tr>
+          <td>${thu}</td>
+          <td>${d}</td>
+          <td>${start}h</td>
+          <td>${end}h</td>
+          <td>${current}</td>
+          <td>${hc.toLocaleString()}</td>
+          <td>${tc.toLocaleString()}</td>
+          <td>${bonus.toLocaleString()}</td>
+          <td><b>${total.toLocaleString()}</b></td>
+          <td><button class="danger" onclick="delDay(${i})">✖</button></td>
+        </tr>`;
+      sHC += hc; sTC += tc; sB += bonus; sT += total;
+    });
+
+    document.getElementById("rows").innerHTML = html;
+    document.getElementById("tHC").innerText = sHC.toLocaleString();
+    document.getElementById("tTC").innerText = sTC.toLocaleString();
+    document.getElementById("tB").innerText = sB.toLocaleString();
+    document.getElementById("tSum").innerText = sT.toLocaleString();
+  }
+
+  function delDay(i){
+    if (!current || !data.workers[current]) return;
+    data.workers[current].days.splice(i,1);
+    save();
+    loadWorker();
+  }
+
+  function renderHistory(){
+    const tb = document.getElementById("history");
+    const list = data.history || [];
+    tb.innerHTML = list.map(h => `
+      <tr>
+        <td>${h.time}</td>
+        <td>${(h.thu || getThu(h.date))} - ${h.date}</td>
+        <td>${h.id}</td>
+        <td>${h.name}</td>
+        <td>${h.shift === "ngay" ? "Ca ngày" : "Ca đêm"}</td>
+        <td>${h.start}h</td>
+        <td>${h.end}h</td>
+      </tr>
+    `).join("");
+  }
+
+  function statDay(){
+    const d = document.getElementById("statDate").value;
+    if (!d) return alert("Chọn ngày");
+
+    let hc=0, tc=0, b=0, sum=0;
+    Object.values(data.workers).forEach(w => {
+      (w.days||[]).forEach(x => {
+        if (x.d === d){
+          hc += (x.hc||0);
+          tc += (x.tc||0);
+          b  += (x.bonus||0);
+          sum += (x.total||((x.hc||0)+(x.tc||0)+(x.bonus||0)));
+        }
+      });
+    });
+
+    document.getElementById("statTable").innerHTML = `
+      <tr class="total">
+        <td>Ngày: ${getThu(d)} - ${d}</td>
+        <td>${hc.toLocaleString()}</td>
+        <td>${tc.toLocaleString()}</td>
+        <td>${b.toLocaleString()}</td>
+        <td><b>${sum.toLocaleString()}</b></td>
+      </tr>`;
+  }
+
+  function syncWeekRange(){
+    const pick = document.getElementById("statWeekPick").value;
+    const fromEl = document.getElementById("statWeekFrom");
+    const toEl = document.getElementById("statWeekTo");
+    if (!pick){ fromEl.value=""; toEl.value=""; return; }
+    const r = getWeekRange(pick);
+    fromEl.value = r.start;
+    toEl.value = r.end;
+  }
+
+  function statWeek(){
+    const pick = document.getElementById("statWeekPick").value;
+    if (!pick) return alert("Chọn 1 ngày trong tuần");
+
+    const r = getWeekRange(pick);
+    document.getElementById("statWeekFrom").value = r.start;
+    document.getElementById("statWeekTo").value = r.end;
+
+    let hc=0, tc=0, b=0, sum=0;
+    Object.values(data.workers).forEach(w => {
+      (w.days||[]).forEach(x => {
+        if (x.d >= r.start && x.d <= r.end){
+          hc += (x.hc||0);
+          tc += (x.tc||0);
+          b  += (x.bonus||0);
+          sum += (x.total||((x.hc||0)+(x.tc||0)+(x.bonus||0)));
+        }
+      });
+    });
+
+    document.getElementById("statTable").innerHTML = `
+      <tr class="total">
+        <td>Tuần: ${r.start} → ${r.end}</td>
+        <td>${hc.toLocaleString()}</td>
+        <td>${tc.toLocaleString()}</td>
+        <td>${b.toLocaleString()}</td>
+        <td><b>${sum.toLocaleString()}</b></td>
+      </tr>`;
+  }
+
+  function syncMonthRange(){
+    const pick = document.getElementById("statMonthPick").value;
+    const fromEl = document.getElementById("statMonthFrom");
+    const toEl = document.getElementById("statMonthTo");
+    if (!pick){ fromEl.value=""; toEl.value=""; return; }
+    const r = getMonthRange(pick);
+    fromEl.value = r.start;
+    toEl.value = r.end;
+  }
+
+  function statMonth(){
+    const pick = document.getElementById("statMonthPick").value;
+    if (!pick) return alert("Chọn 1 ngày trong tháng");
+
+    const r = getMonthRange(pick);
+    document.getElementById("statMonthFrom").value = r.start;
+    document.getElementById("statMonthTo").value = r.end;
+
+    let hc=0, tc=0, b=0, sum=0;
+    Object.values(data.workers).forEach(w => {
+      (w.days||[]).forEach(x => {
+        if (x.d >= r.start && x.d <= r.end){
+          hc += (x.hc||0);
+          tc += (x.tc||0);
+          b  += (x.bonus||0);
+          sum += (x.total||((x.hc||0)+(x.tc||0)+(x.bonus||0)));
+        }
+      });
+    });
+
+    document.getElementById("statTable").innerHTML = `
+      <tr class="total">
+        <td>Tháng: ${r.start} → ${r.end}</td>
+        <td>${hc.toLocaleString()}</td>
+        <td>${tc.toLocaleString()}</td>
+        <td>${b.toLocaleString()}</td>
+        <td><b>${sum.toLocaleString()}</b></td>
+      </tr>`;
+  }
+
+  (function init(){
+    const today = toISO(new Date());
+    document.getElementById("date").value = today;
+    document.getElementById("statDate").value = today;
+    document.getElementById("statWeekPick").value = today;
+    document.getElementById("statMonthPick").value = today;
+    syncWeekRange();
+    syncMonthRange();
+    renderWorkerTabs();
+    renderHistory();
+  })();
+</script>
+
+</body>
+</html>
