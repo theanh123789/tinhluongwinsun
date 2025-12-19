@@ -204,6 +204,7 @@
 
     <div class="spacer"></div>
 
+    <!-- ✅ KHUNG GHI LƯƠNG -->
     <div id="workArea" style="display:none;">
       <div class="box">
         <div class="row">
@@ -363,6 +364,9 @@
     return map[d.getDay()];
   }
 
+  // nghỉ 1 tiếng:
+  // ca ngày: 11:45→12:45
+  // ca đêm: 23:45→00:45
   function calcWorkedHours(startHour, endHour, shiftType){
     let start = startHour * 60;
     let end = endHour * 60;
@@ -406,8 +410,10 @@
     if (ev && ev.target) ev.target.classList.add("active");
   }
 
+  // ✅ FIX: workArea.style.display = "block" (không dùng boolean)
   function renderWorkerTabs(){
     const wrap = document.getElementById("workerTabs");
+    const workArea = document.getElementById("workArea");
     wrap.innerHTML = "";
 
     const search = (document.getElementById("workerSearch")?.value || "").trim().toLowerCase();
@@ -415,7 +421,7 @@
 
     if (ids.length === 0){
       wrap.innerHTML = `<span class="muted">Chưa có công nhân. Nhập tên và bấm "Tạo công nhân".</span>`;
-      document.getElementById("workArea").style.display = "none";
+      workArea.style.display = "none";
       current = null;
       return;
     }
@@ -428,7 +434,7 @@
 
     if (filtered.length === 0){
       wrap.innerHTML = `<span class="muted">Không tìm thấy công nhân phù hợp.</span>`;
-      document.getElementById("workArea").style.display = !!current;
+      workArea.style.display = "block";
       loadWorker();
       return;
     }
@@ -436,12 +442,16 @@
     filtered.forEach(({id,name}) => {
       const btn = document.createElement("button");
       btn.className = (id === current) ? "active" : "";
-      btn.textContent = name;  // ✅ không hiện CN001
-      btn.onclick = () => { current = id; renderWorkerTabs(); showToast("Đang chọn: " + name); };
+      btn.textContent = name; // ✅ không hiện CN001
+      btn.onclick = () => {
+        current = id;
+        renderWorkerTabs();
+        showToast("Đang chọn: " + name);
+      };
       wrap.appendChild(btn);
     });
 
-    document.getElementById("workArea").style.display = true;
+    workArea.style.display = "block";
     loadWorker();
   }
 
@@ -474,8 +484,6 @@
     }
 
     data.workers[current].name = name;
-
-    // cập nhật tên trong history hôm nay (cho đẹp)
     data.history = (data.history||[]).map(h => (h.workerId===current ? {...h, name} : h));
 
     save();
@@ -533,19 +541,19 @@
     const total = hc + tc + bonus;
 
     data.workers[current].days.push({
-      d, thu: getThu(d), start: s, end: e, dayType, shiftType, workedHours, hc, tc, bonus, total
+      d, thu: getThu(d), start: s, end: e,
+      dayType, shiftType, workedHours,
+      hc, tc, bonus, total
     });
 
     const today = toISO(new Date());
     data.history.unshift({
       time: new Date().toLocaleTimeString(),
-      date: d,
-      thu: getThu(d),
+      date: d, thu: getThu(d),
       workerId: current,
       name: data.workers[current].name,
       shift: shiftType,
-      start: s,
-      end: e
+      start: s, end: e
     });
     data.history = data.history.filter(x => x.date === today);
 
