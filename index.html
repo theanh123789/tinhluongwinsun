@@ -3,32 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chấm công & tính lương Winsun</title>
+  <title>Chấm công & tính lương Winsun (Nội bộ)</title>
 
   <style>
     :root{
-      --bg:#f2f4f7; --card:#fff; --line:#e5e7eb;
+      --bg1:#e0ecff; --bg2:#f8fbff; --bg3:#eef6ff;
+      --card:#fff; --line:#e5e7eb;
       --text:#0f172a; --muted:#64748b;
       --primary:#2563eb; --success:#16a34a;
       --danger:#dc2626; --gray:#6b7280;
-      --shadow: 0 10px 22px rgba(2,6,23,.08);
+      --shadow: 0 10px 22px rgba(2,6,23,.10);
       --radius: 14px;
     }
     *{ box-sizing:border-box; }
-    body{ font-family: Arial, sans-serif; background:var(--bg); padding:14px; margin:0; color:var(--text); }
-    .container{
-      background:var(--card);
+    body{
+      font-family: Arial, sans-serif;
+      margin:0;
       padding:14px;
-      border-radius:var(--radius);
+      color:var(--text);
+      background:
+        radial-gradient(800px 400px at 10% 10%, rgba(37,99,235,.18), transparent 60%),
+        radial-gradient(700px 380px at 90% 0%, rgba(22,163,74,.14), transparent 60%),
+        linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 40%, var(--bg3) 100%);
+    }
+
+    .container{
       max-width:1200px;
       margin:0 auto;
-      box-shadow:var(--shadow);
+      border-radius:var(--radius);
       border:1px solid var(--line);
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+      box-shadow: 0 12px 30px rgba(0,0,0,.08);
+      padding:14px;
       transition: transform .2s ease, box-shadow .2s ease;
     }
+
     h2{ margin:0 0 10px; font-size:18px; }
+    h3{ margin: 6px 0 10px; }
 
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .spacer{ height:10px; }
+
     input, select, button{
       padding:10px 12px;
       border-radius:12px;
@@ -47,21 +63,22 @@
       cursor:pointer;
       color:#fff;
       background:var(--primary);
-      font-weight:700;
+      font-weight:800;
       border-radius:12px;
       transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
     }
-    button:hover{ filter: brightness(1.05); }
+    button:hover{ filter: brightness(1.05); box-shadow: 0 10px 22px rgba(2,6,23,.10); }
     button:active{ transform: scale(.98); }
     button.gray{ background:var(--gray); }
     button.danger{ background:var(--danger); }
 
     .muted{ color:var(--muted); font-size:13px; }
+
     .box{
       border:1px solid var(--line);
       border-radius:var(--radius);
       padding:12px;
-      background:#fafafa;
+      background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
     .box:hover{
@@ -69,26 +86,37 @@
       box-shadow: 0 14px 28px rgba(2,6,23,.10);
       border-color: rgba(37,99,235,.25);
     }
-    .spacer{ height:10px; }
 
-    /* Tabs */
+    /* Main tabs */
     .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
     .tabs button{
       background:#fff;
       color:var(--text);
       border:1px solid var(--line);
-      font-weight:800;
+      font-weight:900;
       transition: transform .15s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
     }
-    .tabs button:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(2,6,23,.10);
-    }
+    .tabs button:hover{ transform: translateY(-1px); }
     .tabs button.active{
       background:var(--success);
       color:#fff;
       border:none;
       box-shadow: 0 10px 24px rgba(22,163,74,.25);
+    }
+
+    /* Worker tabs */
+    .workerTabs{ display:flex; gap:8px; flex-wrap:wrap; }
+    .workerTabs button{
+      background:#fff;
+      color:#0f172a;
+      border:1px solid var(--line);
+      font-weight:800;
+    }
+    .workerTabs button.active{
+      background:var(--primary);
+      color:#fff;
+      border:none;
+      box-shadow: 0 10px 22px rgba(37,99,235,.22);
     }
 
     /* Tables */
@@ -106,20 +134,24 @@
       white-space:nowrap;
       font-size:13px;
     }
-    th{ background:#f8fafc; position:sticky; top:0; z-index:1; }
+    th{
+      background: linear-gradient(180deg, #f1f5f9, #e8eef6);
+      position:sticky; top:0; z-index:1;
+    }
     tr td{ transition: background .15s ease; }
     tr:hover td{ background:#f8fafc; }
-    .total td{ font-weight:900; background:#ecfdf5; }
+    .total td{
+      font-weight:900;
+      background: linear-gradient(90deg, #ecfdf5, #f0fdf4);
+    }
 
-    /* Flash OK */
+    /* FX */
     .flash-ok{ animation: flashOk .55s ease; }
     @keyframes flashOk{
       0%{ box-shadow: 0 0 0 0 rgba(22,163,74,.0); }
       40%{ box-shadow: 0 0 0 8px rgba(22,163,74,.18); }
       100%{ box-shadow: 0 0 0 0 rgba(22,163,74,.0); }
     }
-
-    /* Shake */
     .shake{ animation: shake .25s linear; }
     @keyframes shake{
       0%{ transform: translateX(0); }
@@ -128,8 +160,6 @@
       75%{ transform: translateX(-4px); }
       100%{ transform: translateX(0); }
     }
-
-    /* Fade out row */
     .fade-out{ animation: fadeOut .25s ease forwards; }
     @keyframes fadeOut{ to{ opacity:0; transform: translateX(6px); } }
 
@@ -143,14 +173,14 @@
       color: #fff;
       padding: 10px 14px;
       border-radius: 999px;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 13px;
       opacity: 0;
       pointer-events: none;
       transition: opacity .18s ease, transform .18s ease;
       z-index: 999;
     }
-    .toast.show{ opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
 
     /* Mobile */
     @media (max-width: 768px){
@@ -176,8 +206,8 @@
 
 <body>
 <script>
-  // ====== PASSWORD GATE ======
-  const PASSWORD = "Theanh@408"; // đổi mật khẩu tại đây
+  // ====== PASSWORD GATE (đổi mật khẩu tại đây) ======
+  const PASSWORD = "Theanh@408";
   if (localStorage.getItem("auth") !== "ok") {
     const p = prompt("Nhập mật khẩu truy cập:");
     if (p !== PASSWORD) {
@@ -190,7 +220,7 @@
 </script>
 
 <div class="container">
-  <h2>🔐 CHẤM CÔNG & TÍNH LƯƠNG WINSUN (by The Anh)</h2>
+  <h2>🔐 CHẤM CÔNG & TÍNH LƯƠNG WINSUN (NỘI BỘ)</h2>
 
   <div class="row">
     <input id="workerName" placeholder="Nhập tên công nhân" />
@@ -214,7 +244,7 @@
         <b>Danh sách công nhân</b>
         <span class="muted">(Mỗi công nhân là 1 tab riêng)</span>
       </div>
-      <div class="row" id="workerTabs"></div>
+      <div class="workerTabs" id="workerTabs"></div>
     </div>
 
     <div class="spacer"></div>
@@ -238,18 +268,22 @@
           </select>
 
           <label>Bắt đầu:</label>
-          <input type="time" id="start" value="08:00" />
+          <div>
+            <input type="number" id="start" value="8" min="0" max="23" style="width:90px"> h
+          </div>
 
           <label>Kết thúc:</label>
-          <input type="time" id="end" value="20:00" />
+          <div>
+            <input type="number" id="end" value="20" min="0" max="23" style="width:90px"> h
+          </div>
 
           <button onclick="addDay()">➕ Thêm ngày</button>
         </div>
 
         <div class="muted">
           • Nghỉ <b>1 tiếng</b> tại <b>11:45</b> (ca ngày) và <b>23:45</b> (ca đêm).<br/>
-          • Ca đêm qua ngày (vd 20:00 → 08:00) tự tính đúng.<br/>
-          • Hỗ trợ <b>+10k</b> chỉ khi <b>Ngày thường + Ca ngày + 08:00→20:00</b> và đủ <b>11 giờ làm</b> (sau nghỉ).
+          • Ca đêm qua ngày (vd 20 → 8) tự tính đúng.<br/>
+          • Hỗ trợ <b>+10k</b> chỉ khi <b>Ngày thường + Ca ngày + 8→20</b> và đủ <b>11 giờ làm</b> (sau nghỉ).
         </div>
       </div>
 
@@ -295,7 +329,7 @@
     <div class="spacer"></div>
 
     <div class="table-wrap">
-      <table style="min-width: 900px;">
+      <table style="min-width:900px;">
         <thead>
           <tr>
             <th>Giờ ghi</th>
@@ -355,7 +389,7 @@
     <div class="spacer"></div>
 
     <div class="table-wrap">
-      <table style="min-width: 720px;">
+      <table style="min-width:720px;">
         <thead>
           <tr>
             <th>Đối tượng</th>
@@ -391,7 +425,7 @@
   function logout(){ localStorage.removeItem("auth"); location.reload(); }
   function toISO(d){ return d.toISOString().slice(0,10); }
 
-  // ========= UI FX =========
+  // ========= FX =========
   function showToast(msg){
     const t = document.getElementById("toast");
     t.textContent = msg;
@@ -420,29 +454,26 @@
     const map = ["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"];
     return map[d.getDay()];
   }
-  function parseTimeToMin(t){
-    const [hh, mm] = t.split(":").map(Number);
-    return (hh*60 + mm);
-  }
 
-  // ✅ Tính phút làm thực tế:
+  // ✅ Tính giờ làm thực tế với nghỉ đúng mốc:
   // - ca ngày: nghỉ 11:45 → 12:45
   // - ca đêm: nghỉ 23:45 → 00:45
   // - chỉ trừ nếu ca làm cắt qua khoảng nghỉ
-  function calcWorkedMinutes(startStr, endStr, shiftType){
-    const start = parseTimeToMin(startStr);
-    let end = parseTimeToMin(endStr);
+  function calcWorkedHours(startHour, endHour, shiftType){
+    let start = startHour * 60;
+    let end = endHour * 60;
+
     if (end <= start) end += 1440; // qua ngày
 
     let breakStart = (shiftType === "dem") ? (23*60 + 45) : (11*60 + 45);
     let breakEnd = breakStart + 60;
 
-    // đưa break về cùng timeline với ca
     if (breakStart < start) { breakStart += 1440; breakEnd += 1440; }
 
     const overlap = Math.max(0, Math.min(end, breakEnd) - Math.max(start, breakStart));
-    const worked = (end - start) - overlap;
-    return Math.max(0, worked);
+    const workedMin = (end - start) - overlap;
+
+    return Math.max(0, workedMin / 60);
   }
 
   function getWeekRange(dateStr){
@@ -486,7 +517,7 @@
 
     ids.forEach(id => {
       const btn = document.createElement("button");
-      btn.className = (id === current) ? "" : "gray";
+      btn.className = (id === current) ? "active" : "";
       btn.textContent = `${id} - ${data.workers[id].name}`;
       btn.onclick = () => selectWorker(id);
       wrap.appendChild(btn);
@@ -499,19 +530,13 @@
 
   function addWorker(){
     const name = document.getElementById("workerName").value.trim();
-    if (!name){
-      showToast("Nhập tên công nhân");
-      shakeWorkArea();
-      return;
-    }
+    if (!name){ showToast("Nhập tên công nhân"); shakeWorkArea(); return; }
 
     if (Object.values(data.workers).some(w => (w?.name || "").toLowerCase() === name.toLowerCase())){
-      showToast("Tên đã tồn tại");
-      shakeWorkArea();
-      return;
+      showToast("Tên đã tồn tại"); shakeWorkArea(); return;
     }
 
-    const id = "CN" + String(Object.keys(data.workers).length + 1).padStart(3, "0");
+    const id = "CN" + String(Object.keys(data.workers).length + 1).padStart(3,"0");
     data.workers[id] = { name, days: [] };
     current = id;
     save();
@@ -529,20 +554,19 @@
 
   // ========= Add Day =========
   function addDay(){
-    if (!current || !data.workers[current]) {
-      showToast("Chưa chọn công nhân");
-      shakeWorkArea();
-      return;
-    }
+    if (!current || !data.workers[current]) { showToast("Chưa chọn công nhân"); shakeWorkArea(); return; }
 
     const d = document.getElementById("date").value || toISO(new Date());
-    const dayType = document.getElementById("dayType").value;     // thuong|chunhat
-    const shiftType = document.getElementById("shiftType").value; // ngay|dem
-    const sStr = document.getElementById("start").value || "08:00";
-    const eStr = document.getElementById("end").value || "20:00";
+    const dayType = document.getElementById("dayType").value;      // thuong|chunhat
+    const shiftType = document.getElementById("shiftType").value;  // ngay|dem
+    const s = +document.getElementById("start").value;
+    const e = +document.getElementById("end").value;
 
-    const workedMin = calcWorkedMinutes(sStr, eStr, shiftType);
-    const workedHours = workedMin / 60;
+    if (Number.isNaN(s) || Number.isNaN(e) || s < 0 || s > 23 || e < 0 || e > 23){
+      showToast("Giờ không hợp lệ"); shakeWorkArea(); return;
+    }
+
+    const workedHours = calcWorkedHours(s, e, shiftType);
 
     // rate theo bảng bạn chốt
     let hcRate = 0, tcRate = 0;
@@ -554,28 +578,25 @@
       tcRate = 0;
     }
 
-    // HC tối đa 8h, TC phần còn lại
     const hcHours = Math.min(8, workedHours);
     const tcHours = Math.max(0, workedHours - 8);
 
-    // pro-rate theo phút (làm lẻ phút vẫn đúng)
     const hc = Math.round(hcHours * hcRate);
     const tc = Math.round(tcHours * tcRate);
 
-    // +10k: ngày thường + ca ngày + đúng 08:00 -> 20:00 + đủ 11h (660 phút) sau nghỉ
-    const bonus = (dayType === "thuong" && shiftType === "ngay" && sStr === "08:00" && eStr === "20:00" && workedMin >= 660)
-      ? 10000 : 0;
+    // +10k: ngày thường + ca ngày + đúng 8→20 và đủ 11 giờ làm (sau nghỉ)
+    const bonus = (dayType === "thuong" && shiftType === "ngay" && s === 8 && e === 20 && workedHours >= 11) ? 10000 : 0;
 
     const total = hc + tc + bonus;
 
     data.workers[current].days.push({
       d,
       thu: getThu(d),
-      start: sStr,
-      end: eStr,
+      start: s,
+      end: e,
       dayType,
       shiftType,
-      workedMin,
+      workedHours,
       hc, tc, bonus, total
     });
 
@@ -583,9 +604,13 @@
     const today = toISO(new Date());
     data.history.unshift({
       time: new Date().toLocaleTimeString(),
-      date: d, thu: getThu(d),
-      id: current, name: data.workers[current].name,
-      shift: shiftType, start: sStr, end: eStr
+      date: d,
+      thu: getThu(d),
+      id: current,
+      name: data.workers[current].name,
+      shift: shiftType,
+      start: s,
+      end: e
     });
     data.history = data.history.filter(x => x.date === today);
 
@@ -606,26 +631,28 @@
     days.forEach((x,i) => {
       const d = x.d || "";
       const thu = x.thu || (d ? getThu(d) : "");
-      const start = x.start ?? "";
-      const end = x.end ?? "";
+      const start = (x.start ?? "");
+      const end = (x.end ?? "");
       const hc = x.hc || 0;
       const tc = x.tc || 0;
       const bonus = x.bonus || 0;
-      const total = x.total || (hc + tc + bonus);
+      const total = x.total || (hc+tc+bonus);
 
       html += `
         <tr>
           <td>${thu}</td>
           <td>${d}</td>
-          <td>${start}</td>
-          <td>${end}</td>
+          <td>${start}h</td>
+          <td>${end}h</td>
           <td>${current}</td>
           <td>${hc.toLocaleString()}</td>
           <td>${tc.toLocaleString()}</td>
           <td>${bonus.toLocaleString()}</td>
           <td><b>${total.toLocaleString()}</b></td>
           <td><button class="danger" onclick="delDay(${i})">✖</button></td>
-        </tr>`;
+        </tr>
+      `;
+
       sHC += hc; sTC += tc; sB += bonus; sT += total;
     });
 
@@ -638,7 +665,6 @@
 
   function delDay(i){
     if (!current || !data.workers[current]) return;
-
     const tr = document.querySelectorAll("#rows tr")[i];
     if (tr){
       tr.classList.add("fade-out");
@@ -667,8 +693,8 @@
         <td>${h.id}</td>
         <td>${h.name}</td>
         <td>${h.shift === "ngay" ? "Ca ngày" : "Ca đêm"}</td>
-        <td>${h.start}</td>
-        <td>${h.end}</td>
+        <td>${h.start}h</td>
+        <td>${h.end}h</td>
       </tr>
     `).join("");
   }
