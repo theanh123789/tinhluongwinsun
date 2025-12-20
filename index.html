@@ -78,7 +78,7 @@
     .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
     .timePack{display:flex; gap:6px; align-items:center}
-    .timePack input{width:88px}
+    .timePack input{width:120px}
     .timePack small{color:var(--muted); font-weight:700}
 
     @media (max-width:768px){
@@ -102,7 +102,6 @@
 
 <body>
 <script>
-  // đổi mật khẩu ở đây
   const PASSWORD = "Theanh@408";
   if (localStorage.getItem("auth") !== "ok") {
     const p = prompt("Nhập mật khẩu truy cập:");
@@ -129,7 +128,6 @@
 
   <div class="spacer"></div>
 
-  <!-- TAB: Salary -->
   <div id="tab-salary">
     <div class="box">
       <div class="row">
@@ -147,7 +145,6 @@
         <button class="success" onclick="renameWorker()">✏️ Sửa tên công nhân</button>
         <button class="danger" onclick="deleteWorker()">🗑️ Xóa công nhân</button>
       </div>
-
       <div class="muted" style="margin-top:6px;">
         • Xóa công nhân sẽ xóa luôn toàn bộ ngày công của người đó.
       </div>
@@ -155,7 +152,6 @@
 
     <div class="spacer"></div>
 
-    <!-- KHUNG GHI LƯƠNG -->
     <div id="workArea" style="display:none;">
       <div class="box">
         <div class="row">
@@ -176,24 +172,24 @@
 
           <label>Bắt đầu:</label>
           <div class="timePack">
-            <input type="text" id="startTime" value="08:00" placeholder="HH:MM"/>
-            <small>(vd 07:30)</small>
+            <input type="text" id="startTime" value="8" placeholder="vd 8 hoặc 8:15"/>
+            <small>(8 = 08:00)</small>
           </div>
 
           <label>Kết thúc:</label>
           <div class="timePack">
-            <input type="text" id="endTime" value="20:00" placeholder="HH:MM"/>
-            <small>(vd 12:50)</small>
+            <input type="text" id="endTime" value="20" placeholder="vd 20 hoặc 20:34"/>
+            <small>(20 = 20:00)</small>
           </div>
 
           <button onclick="addDay()">➕ Thêm ngày</button>
         </div>
 
         <div class="muted">
-          • Nghỉ <b>1 tiếng</b> cố định: <b>11:45→12:45</b> (ca ngày), <b>23:45→00:45</b> (ca đêm).<br/>
-          • Nếu ca làm <b>không đè lên khoảng nghỉ</b> thì <b>KHÔNG</b> bị trừ (vd làm 08:00→11:45).<br/>
-          • Ca đêm qua ngày (vd 20:00 → 08:00) tự tính đúng.<br/>
-          • Hỗ trợ <b>+10k</b> chỉ khi <b>Ngày thường + Ca ngày + 08:00→20:00</b> và đủ <b>11 giờ làm</b> (sau nghỉ).
+          • Nghỉ 1 tiếng cố định: <b>11:45→12:45</b> (ca ngày), <b>23:45→00:45</b> (ca đêm).<br/>
+          • Nếu ca không đè lên giờ nghỉ thì không bị trừ.<br/>
+          • Ca đêm qua ngày (vd 20 → 0:34) tự tính đúng.<br/>
+          • Hỗ trợ <b>+10k</b> chỉ khi <b>Ngày thường + Ca ngày + 8→20</b> và đủ <b>11 giờ làm</b> (sau nghỉ).
         </div>
       </div>
 
@@ -222,7 +218,6 @@
     </div>
   </div>
 
-  <!-- TAB: History -->
   <div id="tab-history" style="display:none;">
     <h3>📜 Lịch sử ghi công hôm nay</h3>
     <div class="muted">Chỉ hiển thị những dòng ghi công có <b>ngày = hôm nay</b>.</div>
@@ -239,10 +234,8 @@
     </div>
   </div>
 
-  <!-- TAB: Stat -->
   <div id="tab-stat" style="display:none;">
     <h3>📊 Thống kê</h3>
-
     <div class="box">
       <div class="row">
         <b>Theo ngày</b>
@@ -282,13 +275,11 @@
       </table>
     </div>
   </div>
-
 </div>
 
 <div id="toast" class="toast">OK</div>
 
 <script>
-  // ================== DATA ==================
   let data = JSON.parse(localStorage.getItem("winsun")) || { workers:{}, history:[] };
   if (!data || typeof data !== "object") data = { workers:{}, history:[] };
   if (!data.workers) data.workers = {};
@@ -304,17 +295,33 @@
   function toISO(d){ return d.toISOString().slice(0,10); }
 
   function showToast(msg){
-    const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.classList.add("show");
+    const t=document.getElementById("toast");
+    t.textContent=msg; t.classList.add("show");
     clearTimeout(window.__toastTimer);
-    window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 1200);
+    window.__toastTimer=setTimeout(()=>t.classList.remove("show"),1200);
   }
 
-  // ================== TIME HELPERS ==================
-  // parse "HH:MM" -> minutes (0..1439)
-  function parseHHMM(str){
+  function showTab(tab, ev){
+    document.getElementById("tab-salary").style.display="none";
+    document.getElementById("tab-history").style.display="none";
+    document.getElementById("tab-stat").style.display="none";
+    document.getElementById("tab-"+tab).style.display="block";
+    document.querySelectorAll("#mainTabs button").forEach(b=>b.classList.remove("active"));
+    if(ev && ev.target) ev.target.classList.add("active");
+  }
+
+  function makeId(){ return "w_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8); }
+
+  // ✅ parse: "8" => 08:00 ; "8:5" => 08:05 ; "20:34" => 20:34
+  function parseTimeLoose(str){
     const s = (str||"").trim();
+    // chỉ số giờ
+    if (/^\d{1,2}$/.test(s)){
+      const hh = +s;
+      if (hh<0 || hh>23) return null;
+      return hh*60;
+    }
+    // giờ:phút
     const m = /^(\d{1,2})\s*:\s*(\d{1,2})$/.exec(s);
     if (!m) return null;
     const hh = +m[1], mm = +m[2];
@@ -323,121 +330,115 @@
   }
   function fmtHHMM(min){
     min = ((min%1440)+1440)%1440;
-    const hh = Math.floor(min/60);
-    const mm = min%60;
+    const hh=Math.floor(min/60), mm=min%60;
     return String(hh).padStart(2,"0")+":"+String(mm).padStart(2,"0");
   }
+  function fmtWorked(workedMin){
+    const h=Math.floor(workedMin/60);
+    const m=workedMin%60;
+    return `${h}h${String(m).padStart(2,"0")}`;
+  }
+  function fmtMoney(n){ return (n||0).toLocaleString("vi-VN"); }
 
   function getThu(dateStr){
-    const d = new Date(dateStr);
-    const map = ["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"];
+    const d=new Date(dateStr);
+    const map=["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"];
     return map[d.getDay()];
   }
 
-  // ✅ TÍNH GIỜ LÀM THEO PHÚT + TRỪ ĐÚNG PHẦN NGHỈ NẾU CÓ ĐÈ LÊN
-  // Nghỉ: ca ngày 11:45-12:45, ca đêm 23:45-00:45
+  // nghỉ 11:45-12:45 (ngày), 23:45-00:45 (đêm) => chỉ trừ phần overlap
   function calcWorkedMinutes(startMin, endMin, shiftType){
-    // chuyển về timeline có thể qua ngày
-    let start = startMin;
-    let end = endMin;
-    if (end <= start) end += 1440;
+    let start=startMin, end=endMin;
+    if(end<=start) end+=1440;
 
-    let breakStart = (shiftType === "dem") ? (23*60 + 45) : (11*60 + 45);
-    let breakEnd = breakStart + 60; // 1 tiếng
+    let breakStart=(shiftType==="dem") ? (23*60+45) : (11*60+45);
+    let breakEnd=breakStart+60;
 
-    // đưa khoảng nghỉ lên đúng "ngày" của ca
-    if (breakStart < start) { breakStart += 1440; breakEnd += 1440; }
+    if(breakStart<start){ breakStart+=1440; breakEnd+=1440; }
 
-    // overlap phút giữa ca làm và giờ nghỉ
-    const overlap = Math.max(0, Math.min(end, breakEnd) - Math.max(start, breakStart));
-    const worked = Math.max(0, (end - start) - overlap);
-    return worked;
+    const overlap=Math.max(0, Math.min(end, breakEnd) - Math.max(start, breakStart));
+    return Math.max(0, (end-start) - overlap);
   }
 
-  // ================== UI TABS ==================
-  function showTab(tab, ev){
-    document.getElementById("tab-salary").style.display = "none";
-    document.getElementById("tab-history").style.display = "none";
-    document.getElementById("tab-stat").style.display = "none";
-    document.getElementById("tab-" + tab).style.display = "block";
-
-    document.querySelectorAll("#mainTabs button").forEach(b => b.classList.remove("active"));
-    if (ev && ev.target) ev.target.classList.add("active");
+  function getRates(dayType, shiftType){
+    if(dayType==="thuong"){
+      if(shiftType==="ngay") return {hc:25000, tc:30000, sundayFlat:false};
+      return {hc:30000, tc:35000, sundayFlat:false};
+    }else{
+      if(shiftType==="ngay") return {flat:35000, sundayFlat:true};
+      return {flat:45000, sundayFlat:true};
+    }
   }
-
-  // ================== WORKERS ==================
-  function makeId(){ return "w_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8); }
 
   function renderWorkerTabs(){
-    const wrap = document.getElementById("workerTabs");
-    const workArea = document.getElementById("workArea");
-    wrap.innerHTML = "";
+    const wrap=document.getElementById("workerTabs");
+    const workArea=document.getElementById("workArea");
+    wrap.innerHTML="";
 
-    const search = (document.getElementById("workerSearch").value || "").trim().toLowerCase();
-    const ids = Object.keys(data.workers);
+    const search=(document.getElementById("workerSearch").value||"").trim().toLowerCase();
+    const ids=Object.keys(data.workers);
 
-    if (ids.length === 0){
-      wrap.innerHTML = `<span class="muted">Chưa có công nhân. Nhập tên và bấm "Tạo công nhân".</span>`;
-      workArea.style.display = "none";
-      current = null;
+    if(ids.length===0){
+      wrap.innerHTML=`<span class="muted">Chưa có công nhân. Nhập tên và bấm "Tạo công nhân".</span>`;
+      workArea.style.display="none";
+      current=null;
       return;
     }
+    if(!current || !data.workers[current]) current=ids[0];
 
-    if (!current || !data.workers[current]) current = ids[0];
+    const filtered=ids
+      .map(id=>({id,name:data.workers[id].name}))
+      .filter(x=>!search || x.name.toLowerCase().includes(search));
 
-    const filtered = ids
-      .map(id => ({ id, name: data.workers[id].name }))
-      .filter(x => !search || x.name.toLowerCase().includes(search));
-
-    if (filtered.length === 0){
-      wrap.innerHTML = `<span class="muted">Không tìm thấy công nhân phù hợp.</span>`;
-      workArea.style.display = "block";
+    if(filtered.length===0){
+      wrap.innerHTML=`<span class="muted">Không tìm thấy công nhân phù hợp.</span>`;
+      workArea.style.display="block";
       loadWorker();
       return;
     }
 
     filtered.forEach(({id,name})=>{
-      const btn = document.createElement("button");
-      btn.className = (id === current) ? "active" : "";
-      btn.textContent = name; // không hiện CN
-      btn.onclick = ()=>{ current=id; renderWorkerTabs(); showToast("Đang chọn: " + name); };
+      const btn=document.createElement("button");
+      btn.className=(id===current)?"active":"";
+      btn.textContent=name;
+      btn.onclick=()=>{ current=id; renderWorkerTabs(); showToast("Đang chọn: "+name); };
       wrap.appendChild(btn);
     });
 
-    workArea.style.display = "block";
+    workArea.style.display="block";
     loadWorker();
   }
 
   function addWorker(){
-    const name = document.getElementById("workerName").value.trim();
-    if (!name) return showToast("Nhập tên công nhân");
-    if (Object.values(data.workers).some(w => (w?.name||"").toLowerCase() === name.toLowerCase())){
+    const name=document.getElementById("workerName").value.trim();
+    if(!name) return showToast("Nhập tên công nhân");
+    if(Object.values(data.workers).some(w=>(w?.name||"").toLowerCase()===name.toLowerCase()))
       return showToast("Tên đã tồn tại");
-    }
-    const id = makeId();
-    data.workers[id] = { name, days: [] };
-    current = id;
+
+    const id=makeId();
+    data.workers[id]={name,days:[]};
+    current=id;
+
     save();
-    document.getElementById("workerName").value = "";
-    document.getElementById("workerSearch").value = "";
+    document.getElementById("workerName").value="";
+    document.getElementById("workerSearch").value="";
     renderWorkerTabs();
     showToast("✅ Đã tạo công nhân");
   }
 
   function renameWorker(){
-    if (!current || !data.workers[current]) return showToast("Chưa chọn công nhân");
-    const oldName = data.workers[current].name;
-    const newName = prompt("Nhập tên mới:", oldName);
-    if (!newName) return;
-    const name = newName.trim();
-    if (!name) return;
+    if(!current || !data.workers[current]) return showToast("Chưa chọn công nhân");
+    const oldName=data.workers[current].name;
+    const newName=prompt("Nhập tên mới:", oldName);
+    if(!newName) return;
+    const name=newName.trim();
+    if(!name) return;
 
-    if (Object.entries(data.workers).some(([id,w]) => id !== current && (w?.name||"").toLowerCase() === name.toLowerCase())){
+    if(Object.entries(data.workers).some(([id,w])=>id!==current && (w?.name||"").toLowerCase()===name.toLowerCase()))
       return showToast("Tên bị trùng");
-    }
 
-    data.workers[current].name = name;
-    data.history = (data.history||[]).map(h => (h.workerId===current ? {...h, name} : h));
+    data.workers[current].name=name;
+    data.history=(data.history||[]).map(h=>h.workerId===current?{...h,name}:h);
 
     save();
     renderWorkerTabs();
@@ -446,14 +447,13 @@
   }
 
   function deleteWorker(){
-    if (!current || !data.workers[current]) return showToast("Chưa chọn công nhân");
-    const name = data.workers[current].name;
-    const ok = confirm("XÓA công nhân: " + name + " ?\nSẽ xóa luôn toàn bộ ngày công.");
-    if (!ok) return;
+    if(!current || !data.workers[current]) return showToast("Chưa chọn công nhân");
+    const name=data.workers[current].name;
+    if(!confirm("XÓA công nhân: "+name+"?\nSẽ xóa luôn toàn bộ ngày công.")) return;
 
     delete data.workers[current];
-    data.history = (data.history||[]).filter(h => h.workerId !== current);
-    current = null;
+    data.history=(data.history||[]).filter(h=>h.workerId!==current);
+    current=null;
 
     save();
     renderWorkerTabs();
@@ -461,79 +461,50 @@
     showToast("🗑️ Đã xóa công nhân");
   }
 
-  // ================== PAY RULES ==================
-  // Bảng lương như bạn chốt:
-  // Ngày thường:  Ca ngày: HC 25k, TC 30k ; Ca đêm: HC 30k, TC 35k
-  // Chủ nhật:     Ca ngày: 35k/giờ ; Ca đêm: 45k/giờ ; (không tách TC)
-  function getRates(dayType, shiftType){
-    if (dayType === "thuong"){
-      if (shiftType === "ngay") return { hc:25000, tc:30000, sundayFlat:false };
-      return { hc:30000, tc:35000, sundayFlat:false };
-    } else { // chunhat
-      if (shiftType === "ngay") return { flat:35000, sundayFlat:true };
-      return { flat:45000, sundayFlat:true };
-    }
-  }
-
   function addDay(){
-    if (!current || !data.workers[current]) return showToast("Chưa chọn công nhân");
+    if(!current || !data.workers[current]) return showToast("Chưa chọn công nhân");
+    const d=document.getElementById("date").value || toISO(new Date());
+    const dayType=document.getElementById("dayType").value;
+    const shiftType=document.getElementById("shiftType").value;
 
-    const d = document.getElementById("date").value || toISO(new Date());
-    const dayType = document.getElementById("dayType").value;     // thuong / chunhat
-    const shiftType = document.getElementById("shiftType").value; // ngay / dem
-    const st = parseHHMM(document.getElementById("startTime").value);
-    const en = parseHHMM(document.getElementById("endTime").value);
+    const st=parseTimeLoose(document.getElementById("startTime").value);
+    const en=parseTimeLoose(document.getElementById("endTime").value);
+    if(st===null || en===null) return showToast("Sai giờ. Nhập: 8, 8:15, 20, 20:34...");
 
-    if (st === null || en === null) return showToast("Sai giờ. Nhập dạng HH:MM (vd 08:00, 12:50)");
+    const workedMin=calcWorkedMinutes(st, en, shiftType);
+    const rates=getRates(dayType, shiftType);
 
-    const workedMin = calcWorkedMinutes(st, en, shiftType);
-    const workedHours = workedMin / 60; // có thể lẻ như 1.34h
-
-    const rates = getRates(dayType, shiftType);
-
-    let hc = 0, tc = 0;
-
-    if (rates.sundayFlat){
-      // Chủ nhật: trả theo 1 giá/giờ, vẫn tính theo phút
-      hc = Math.round(workedHours * rates.flat);
+    let hc=0, tc=0;
+    if(rates.sundayFlat){
+      hc = Math.round((workedMin/60) * rates.flat);
       tc = 0;
-    } else {
-      // Ngày thường: tách 8h đầu = HC, phần còn lại = TC (tính theo phút)
-      const hcMin = Math.min(8*60, workedMin);
-      const tcMin = Math.max(0, workedMin - 8*60);
-      hc = Math.round((hcMin/60) * rates.hc);
-      tc = Math.round((tcMin/60) * rates.tc);
+    }else{
+      const hcMin=Math.min(8*60, workedMin);
+      const tcMin=Math.max(0, workedMin - 8*60);
+      hc=Math.round((hcMin/60) * rates.hc);
+      tc=Math.round((tcMin/60) * rates.tc);
     }
 
-    // +10k hỗ trợ: ngày thường + ca ngày + đúng 08:00→20:00 + đủ 11 giờ làm (sau nghỉ)
-    const bonus = (dayType==="thuong" && shiftType==="ngay" && st===8*60 && en===20*60 && workedMin >= 11*60) ? 10000 : 0;
-
-    const total = hc + tc + bonus;
+    const bonus=(dayType==="thuong" && shiftType==="ngay" && st===8*60 && en===20*60 && workedMin>=11*60) ? 10000 : 0;
+    const total=hc+tc+bonus;
 
     data.workers[current].days.push({
-      d,
-      thu: getThu(d),
-      shiftType,
-      dayType,
-      startMin: st,
-      endMin: en,
-      workedMin,
+      d, thu:getThu(d), dayType, shiftType,
+      startMin:st, endMin:en, workedMin,
       hc, tc, bonus, total
     });
 
-    // history: chỉ giữ hôm nay
-    const today = toISO(new Date());
+    const today=toISO(new Date());
     data.history.unshift({
-      time: new Date().toLocaleTimeString(),
-      date: d,
-      thu: getThu(d),
-      workerId: current,
-      name: data.workers[current].name,
-      shift: shiftType,
-      start: fmtHHMM(st),
-      end: fmtHHMM(en)
+      time:new Date().toLocaleTimeString(),
+      date:d, thu:getThu(d),
+      workerId:current,
+      name:data.workers[current].name,
+      shift:shiftType,
+      start:fmtHHMM(st),
+      end:fmtHHMM(en),
     });
-    data.history = data.history.filter(x => x.date === today);
+    data.history=data.history.filter(x=>x.date===today);
 
     save();
     loadWorker();
@@ -541,33 +512,22 @@
     showToast("✅ Đã thêm ngày");
   }
 
-  // ================== RENDER SALARY TABLE ==================
-  function fmtMoney(n){ return (n||0).toLocaleString("vi-VN"); }
-
-  function fmtWorked(workedMin){
-    const h = Math.floor(workedMin/60);
-    const m = workedMin%60;
-    return `${h}h${String(m).padStart(2,"0")}`;
-  }
-
   function loadWorker(){
-    const rows = document.getElementById("rows");
-    if (!current || !data.workers[current]){
-      rows.innerHTML = "";
-      document.getElementById("tHC").innerText = "0";
-      document.getElementById("tTC").innerText = "0";
-      document.getElementById("tB").innerText  = "0";
-      document.getElementById("tSum").innerText= "0";
+    const rows=document.getElementById("rows");
+    if(!current || !data.workers[current]){
+      rows.innerHTML="";
+      document.getElementById("tHC").innerText="0";
+      document.getElementById("tTC").innerText="0";
+      document.getElementById("tB").innerText="0";
+      document.getElementById("tSum").innerText="0";
       return;
     }
-
-    const w = data.workers[current];
-    const days = w.days || [];
-
+    const w=data.workers[current];
+    const days=w.days||[];
     let html="", sHC=0,sTC=0,sB=0,sT=0;
 
     days.forEach((x,i)=>{
-      html += `
+      html+=`
         <tr>
           <td>${x.thu}</td>
           <td>${x.d}</td>
@@ -585,63 +545,74 @@
       sHC+=x.hc||0; sTC+=x.tc||0; sB+=x.bonus||0; sT+=x.total||0;
     });
 
-    rows.innerHTML = html;
-    document.getElementById("tHC").innerText = fmtMoney(sHC);
-    document.getElementById("tTC").innerText = fmtMoney(sTC);
-    document.getElementById("tB").innerText  = fmtMoney(sB);
-    document.getElementById("tSum").innerText= fmtMoney(sT);
+    rows.innerHTML=html;
+    document.getElementById("tHC").innerText=fmtMoney(sHC);
+    document.getElementById("tTC").innerText=fmtMoney(sTC);
+    document.getElementById("tB").innerText=fmtMoney(sB);
+    document.getElementById("tSum").innerText=fmtMoney(sT);
   }
 
   function delDay(i){
-    if (!current || !data.workers[current]) return;
+    if(!current || !data.workers[current]) return;
     data.workers[current].days.splice(i,1);
-    save();
-    loadWorker();
+    save(); loadWorker();
     showToast("🗑️ Đã xoá");
   }
 
-  // ================== HISTORY ==================
   function renderHistory(){
-    const tb = document.getElementById("history");
-    const list = data.history || [];
-    tb.innerHTML = list.map(h => `
+    const tb=document.getElementById("history");
+    const list=data.history||[];
+    tb.innerHTML=list.map(h=>`
       <tr>
         <td>${h.time}</td>
         <td>${h.thu} - ${h.date}</td>
         <td>${h.name}</td>
-        <td>${h.shift==="ngay" ? "Ca ngày" : "Ca đêm"}</td>
+        <td>${h.shift==="ngay"?"Ca ngày":"Ca đêm"}</td>
         <td>${h.start}</td>
         <td>${h.end}</td>
       </tr>
     `).join("");
   }
 
-  // ================== STATS ==================
   function getWeekRange(dateStr){
-    const d = new Date(dateStr);
-    const day = d.getDay(); // 0=CN
-    const diff = (day === 0 ? -6 : 1) - day; // về T2
-    const monday = new Date(d); monday.setDate(d.getDate()+diff);
-    const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
-    return { start: toISO(monday), end: toISO(sunday) };
+    const d=new Date(dateStr);
+    const day=d.getDay();
+    const diff=(day===0?-6:1)-day;
+    const mon=new Date(d); mon.setDate(d.getDate()+diff);
+    const sun=new Date(mon); sun.setDate(mon.getDate()+6);
+    return {start:toISO(mon), end:toISO(sun)};
   }
   function getMonthRange(dateStr){
-    const d = new Date(dateStr);
-    const start = new Date(d.getFullYear(), d.getMonth(), 1);
-    const end = new Date(d.getFullYear(), d.getMonth()+1, 0);
-    return { start: toISO(start), end: toISO(end) };
+    const d=new Date(dateStr);
+    const start=new Date(d.getFullYear(), d.getMonth(), 1);
+    const end=new Date(d.getFullYear(), d.getMonth()+1, 0);
+    return {start:toISO(start), end:toISO(end)};
+  }
+  function syncWeekRange(){
+    const pick=document.getElementById("statWeekPick").value;
+    const from=document.getElementById("statWeekFrom");
+    const to=document.getElementById("statWeekTo");
+    if(!pick){from.value="";to.value="";return;}
+    const r=getWeekRange(pick);
+    from.value=r.start; to.value=r.end;
+  }
+  function syncMonthRange(){
+    const pick=document.getElementById("statMonthPick").value;
+    const from=document.getElementById("statMonthFrom");
+    const to=document.getElementById("statMonthTo");
+    if(!pick){from.value="";to.value="";return;}
+    const r=getMonthRange(pick);
+    from.value=r.start; to.value=r.end;
   }
 
   function statDay(){
-    const d = document.getElementById("statDate").value;
-    if (!d) return showToast("Chọn ngày");
-
-    let hc=0, tc=0, b=0, sum=0;
-    Object.values(data.workers).forEach(w => (w.days||[]).forEach(x=>{
-      if (x.d===d){ hc+=x.hc||0; tc+=x.tc||0; b+=x.bonus||0; sum+=x.total||0; }
+    const d=document.getElementById("statDate").value;
+    if(!d) return showToast("Chọn ngày");
+    let hc=0,tc=0,b=0,sum=0;
+    Object.values(data.workers).forEach(w=>(w.days||[]).forEach(x=>{
+      if(x.d===d){ hc+=x.hc||0; tc+=x.tc||0; b+=x.bonus||0; sum+=x.total||0; }
     }));
-
-    document.getElementById("statTable").innerHTML = `
+    document.getElementById("statTable").innerHTML=`
       <tr class="total">
         <td>Ngày: ${getThu(d)} - ${d}</td>
         <td>${fmtMoney(hc)}</td>
@@ -653,27 +624,18 @@
     showToast("📊 Đã thống kê ngày");
   }
 
-  function syncWeekRange(){
-    const pick = document.getElementById("statWeekPick").value;
-    const fromEl = document.getElementById("statWeekFrom");
-    const toEl = document.getElementById("statWeekTo");
-    if (!pick){ fromEl.value=""; toEl.value=""; return; }
-    const r = getWeekRange(pick);
-    fromEl.value = r.start; toEl.value = r.end;
-  }
   function statWeek(){
-    const pick = document.getElementById("statWeekPick").value;
-    if (!pick) return showToast("Chọn ngày trong tuần");
-    const r = getWeekRange(pick);
-    document.getElementById("statWeekFrom").value = r.start;
-    document.getElementById("statWeekTo").value = r.end;
+    const pick=document.getElementById("statWeekPick").value;
+    if(!pick) return showToast("Chọn ngày trong tuần");
+    const r=getWeekRange(pick);
+    document.getElementById("statWeekFrom").value=r.start;
+    document.getElementById("statWeekTo").value=r.end;
 
-    let hc=0, tc=0, b=0, sum=0;
-    Object.values(data.workers).forEach(w => (w.days||[]).forEach(x=>{
-      if (x.d>=r.start && x.d<=r.end){ hc+=x.hc||0; tc+=x.tc||0; b+=x.bonus||0; sum+=x.total||0; }
+    let hc=0,tc=0,b=0,sum=0;
+    Object.values(data.workers).forEach(w=>(w.days||[]).forEach(x=>{
+      if(x.d>=r.start && x.d<=r.end){ hc+=x.hc||0; tc+=x.tc||0; b+=x.bonus||0; sum+=x.total||0; }
     }));
-
-    document.getElementById("statTable").innerHTML = `
+    document.getElementById("statTable").innerHTML=`
       <tr class="total">
         <td>Tuần: ${r.start} → ${r.end}</td>
         <td>${fmtMoney(hc)}</td>
@@ -685,27 +647,18 @@
     showToast("📊 Đã thống kê tuần");
   }
 
-  function syncMonthRange(){
-    const pick = document.getElementById("statMonthPick").value;
-    const fromEl = document.getElementById("statMonthFrom");
-    const toEl = document.getElementById("statMonthTo");
-    if (!pick){ fromEl.value=""; toEl.value=""; return; }
-    const r = getMonthRange(pick);
-    fromEl.value = r.start; toEl.value = r.end;
-  }
   function statMonth(){
-    const pick = document.getElementById("statMonthPick").value;
-    if (!pick) return showToast("Chọn ngày trong tháng");
-    const r = getMonthRange(pick);
-    document.getElementById("statMonthFrom").value = r.start;
-    document.getElementById("statMonthTo").value = r.end;
+    const pick=document.getElementById("statMonthPick").value;
+    if(!pick) return showToast("Chọn ngày trong tháng");
+    const r=getMonthRange(pick);
+    document.getElementById("statMonthFrom").value=r.start;
+    document.getElementById("statMonthTo").value=r.end;
 
-    let hc=0, tc=0, b=0, sum=0;
-    Object.values(data.workers).forEach(w => (w.days||[]).forEach(x=>{
-      if (x.d>=r.start && x.d<=r.end){ hc+=x.hc||0; tc+=x.tc||0; b+=x.bonus||0; sum+=x.total||0; }
+    let hc=0,tc=0,b=0,sum=0;
+    Object.values(data.workers).forEach(w=>(w.days||[]).forEach(x=>{
+      if(x.d>=r.start && x.d<=r.end){ hc+=x.hc||0; tc+=x.tc||0; b+=x.bonus||0; sum+=x.total||0; }
     }));
-
-    document.getElementById("statTable").innerHTML = `
+    document.getElementById("statTable").innerHTML=`
       <tr class="total">
         <td>Tháng: ${r.start} → ${r.end}</td>
         <td>${fmtMoney(hc)}</td>
@@ -717,19 +670,14 @@
     showToast("📊 Đã thống kê tháng");
   }
 
-  // ================== INIT ==================
   (function init(){
-    const today = toISO(new Date());
-    document.getElementById("date").value = today;
-
-    document.getElementById("statDate").value = today;
-    document.getElementById("statWeekPick").value = today;
-    document.getElementById("statMonthPick").value = today;
-    syncWeekRange();
-    syncMonthRange();
-
-    renderWorkerTabs();
-    renderHistory();
+    const today=toISO(new Date());
+    document.getElementById("date").value=today;
+    document.getElementById("statDate").value=today;
+    document.getElementById("statWeekPick").value=today;
+    document.getElementById("statMonthPick").value=today;
+    syncWeekRange(); syncMonthRange();
+    renderWorkerTabs(); renderHistory();
   })();
 </script>
 
