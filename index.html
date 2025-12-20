@@ -2,35 +2,33 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chấm công & tính lương Winsun (Nội bộ)</title>
-
   <style>
     :root{
       --line:#e5e7eb; --text:#0f172a; --muted:#64748b;
       --primary:#2563eb; --success:#16a34a; --danger:#dc2626; --gray:#6b7280;
-      --shadow: 0 10px 22px rgba(2,6,23,.10); --radius: 14px;
+      --radius:16px;
     }
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
     body{
-      font-family: Arial, sans-serif; margin:0; padding:14px; color:var(--text);
+      margin:0; padding:14px; font-family:Arial, sans-serif; color:var(--text);
       background:
         radial-gradient(800px 400px at 10% 10%, rgba(37,99,235,.18), transparent 60%),
         radial-gradient(700px 380px at 90% 0%, rgba(22,163,74,.14), transparent 60%),
         linear-gradient(135deg, #e0ecff 0%, #f8fbff 40%, #eef6ff 100%);
     }
     .container{
-      max-width:1200px; margin:0 auto; border-radius:var(--radius);
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+      max-width:1200px; margin:0 auto; background:linear-gradient(180deg,#fff,#f9fbff);
+      border:1px solid var(--line); border-radius:var(--radius);
       box-shadow: 0 12px 30px rgba(0,0,0,.08);
       padding:14px;
     }
-    h2{ margin:0 0 10px; font-size:18px; }
-    h3{ margin: 6px 0 10px; }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .spacer{ height:10px; }
-    .muted{ color:var(--muted); font-size:13px; }
+    h2{margin:0 0 10px; font-size:18px}
+    h3{margin:6px 0 10px}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .spacer{height:10px}
+    .muted{color:var(--muted); font-size:13px}
 
     input, select, button{
       padding:10px 12px; border-radius:12px; border:1px solid var(--line);
@@ -40,114 +38,71 @@
       outline:none; border-color: rgba(37,99,235,.55);
       box-shadow: 0 0 0 4px rgba(37,99,235,.12);
     }
-
     button{
       border:none; cursor:pointer; color:#fff; background:var(--primary);
       font-weight:900; border-radius:12px;
-      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+      transition: transform .12s ease, filter .12s ease;
     }
-    button:hover{ filter: brightness(1.05); box-shadow: 0 10px 22px rgba(2,6,23,.10); }
-    button:active{ transform: scale(.98); }
-    button.gray{ background:var(--gray); }
-    button.danger{ background:var(--danger); }
-    button.success{ background:var(--success); }
+    button:hover{filter:brightness(1.05)}
+    button:active{transform:scale(.98)}
+    button.gray{background:var(--gray)}
+    button.success{background:var(--success)}
+    button.danger{background:var(--danger)}
 
     .box{
-      border:1px solid var(--line); border-radius:var(--radius); padding:12px;
-      background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    }
-    .box:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(2,6,23,.10);
-      border-color: rgba(37,99,235,.25);
+      border:1px solid var(--line); border-radius:var(--radius);
+      padding:12px; background:linear-gradient(180deg,#fff,#f4f8ff);
     }
 
-    .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .tabs button{
-      background:#fff; color:var(--text); border:1px solid var(--line); font-weight:900;
-    }
-    .tabs button.active{
-      background:var(--success); color:#fff; border:none;
-      box-shadow: 0 10px 24px rgba(22,163,74,.25);
-    }
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .tabs button{background:#fff; color:var(--text); border:1px solid var(--line)}
+    .tabs button.active{background:var(--success); color:#fff; border:none}
 
-    .workerTabs{ display:flex; gap:8px; flex-wrap:wrap; }
-    .workerTabs button{
-      background:#fff; color:#0f172a; border:1px solid var(--line);
-      font-weight:900; max-width:100%;
-    }
-    .workerTabs button.active{
-      background:var(--primary); color:#fff; border:none;
-      box-shadow: 0 10px 22px rgba(37,99,235,.22);
-    }
+    .workerTabs{display:flex; gap:8px; flex-wrap:wrap}
+    .workerTabs button{background:#fff; color:var(--text); border:1px solid var(--line); font-weight:900}
+    .workerTabs button.active{background:var(--primary); color:#fff; border:none}
 
-    .table-wrap{
-      overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); background:#fff;
-    }
-    table{ width:100%; border-collapse:collapse; min-width:980px; background:#fff; }
-    th, td{
-      border-bottom:1px solid var(--line); padding:10px 8px; text-align:center;
-      white-space:nowrap; font-size:13px;
-    }
-    th{
-      background: linear-gradient(180deg, #f1f5f9, #e8eef6);
-      position:sticky; top:0; z-index:1;
-    }
-    tr:hover td{ background:#f8fafc; }
-    .total td{
-      font-weight:900; background: linear-gradient(90deg, #ecfdf5, #f0fdf4);
-    }
-
-    .flash-ok{ animation: flashOk .55s ease; }
-    @keyframes flashOk{
-      0%{ box-shadow: 0 0 0 0 rgba(22,163,74,.0); }
-      40%{ box-shadow: 0 0 0 8px rgba(22,163,74,.18); }
-      100%{ box-shadow: 0 0 0 0 rgba(22,163,74,.0); }
-    }
-    .shake{ animation: shake .25s linear; }
-    @keyframes shake{
-      0%{ transform: translateX(0); }
-      25%{ transform: translateX(-5px); }
-      50%{ transform: translateX(5px); }
-      75%{ transform: translateX(-4px); }
-      100%{ transform: translateX(0); }
-    }
-    .fade-out{ animation: fadeOut .25s ease forwards; }
-    @keyframes fadeOut{ to{ opacity:0; transform: translateX(6px); } }
+    .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); background:#fff}
+    table{width:100%; border-collapse:collapse; min-width:1040px}
+    th,td{border-bottom:1px solid var(--line); padding:10px 8px; text-align:center; white-space:nowrap; font-size:13px}
+    th{background:linear-gradient(180deg,#f1f5f9,#e8eef6); position:sticky; top:0; z-index:1}
+    .total td{font-weight:900; background:linear-gradient(90deg,#ecfdf5,#f0fdf4)}
 
     .toast{
-      position: fixed; left: 50%; bottom: 92px;
-      transform: translateX(-50%) translateY(10px);
-      background: rgba(15,23,42,.92); color: #fff;
-      padding: 10px 14px; border-radius: 999px;
-      font-weight: 900; font-size: 13px;
-      opacity: 0; pointer-events: none;
-      transition: opacity .18s ease, transform .18s ease;
-      z-index: 999;
+      position:fixed; left:50%; bottom:92px; transform:translateX(-50%) translateY(10px);
+      background: rgba(15,23,42,.92); color:#fff;
+      padding:10px 14px; border-radius:999px; font-weight:900; font-size:13px;
+      opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease;
+      z-index:999;
     }
-    .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
-    @media (max-width: 768px){
-      body{ padding:10px; }
-      .container{ padding:12px; margin-bottom: 92px; }
-      .row{ flex-direction:column; align-items:stretch; }
-      input, select, button{ width:100%; font-size:16px; padding:12px 14px; }
+    .timePack{display:flex; gap:6px; align-items:center}
+    .timePack input{width:88px}
+    .timePack small{color:var(--muted); font-weight:700}
 
+    @media (max-width:768px){
+      body{padding:10px}
+      .container{padding:12px; margin-bottom:92px}
+      .row{flex-direction:column; align-items:stretch}
+      input, select, button{width:100%; font-size:16px; padding:12px 14px}
+      .timePack{width:100%}
+      .timePack input{width:100%}
       .tabs{
         position:fixed; left:10px; right:10px; bottom:10px;
         background: rgba(255,255,255,.95);
-        border:1px solid var(--line);
-        border-radius:16px; padding:8px;
-        box-shadow: var(--shadow); z-index:50;
+        border:1px solid var(--line); border-radius:16px; padding:8px;
+        box-shadow: 0 10px 22px rgba(2,6,23,.10);
+        z-index:50;
       }
-      .tabs button{ flex:1; width:auto; padding:12px 10px; font-size:14px; }
+      .tabs button{flex:1; width:auto; padding:12px 10px; font-size:14px}
     }
   </style>
 </head>
 
 <body>
 <script>
+  // đổi mật khẩu ở đây
   const PASSWORD = "Theanh@408";
   if (localStorage.getItem("auth") !== "ok") {
     const p = prompt("Nhập mật khẩu truy cập:");
@@ -160,7 +115,7 @@
   <h2>🔐 CHẤM CÔNG & TÍNH LƯƠNG WINSUN (NỘI BỘ)</h2>
 
   <div class="row">
-    <input id="workerName" placeholder="Nhập tên công nhân" />
+    <input id="workerName" placeholder="Nhập tên công nhân"/>
     <button onclick="addWorker()">➕ Tạo công nhân</button>
     <button class="gray" onclick="logout()">Đăng xuất</button>
     <span class="muted">Mật khẩu: <b>Theanh@408</b></span>
@@ -181,35 +136,31 @@
         <b>Danh sách công nhân</b>
         <span class="muted">(Tìm nhanh theo tên)</span>
       </div>
-
       <div class="row">
-        <input id="workerSearch" placeholder="🔎 Tìm công nhân..." oninput="renderWorkerTabs()" />
+        <input id="workerSearch" placeholder="🔎 Tìm công nhân..." oninput="renderWorkerTabs()"/>
       </div>
-
       <div class="spacer"></div>
-
       <div class="workerTabs" id="workerTabs"></div>
 
       <div class="spacer"></div>
-
       <div class="row">
         <button class="success" onclick="renameWorker()">✏️ Sửa tên công nhân</button>
         <button class="danger" onclick="deleteWorker()">🗑️ Xóa công nhân</button>
       </div>
 
       <div class="muted" style="margin-top:6px;">
-        • Xóa công nhân sẽ xóa luôn tất cả ngày công của người đó.
+        • Xóa công nhân sẽ xóa luôn toàn bộ ngày công của người đó.
       </div>
     </div>
 
     <div class="spacer"></div>
 
-    <!-- ✅ KHUNG GHI LƯƠNG -->
+    <!-- KHUNG GHI LƯƠNG -->
     <div id="workArea" style="display:none;">
       <div class="box">
         <div class="row">
           <label>Ngày:</label>
-          <input type="date" id="date" />
+          <input type="date" id="date"/>
 
           <label>Loại ngày:</label>
           <select id="dayType">
@@ -224,18 +175,25 @@
           </select>
 
           <label>Bắt đầu:</label>
-          <div><input type="number" id="start" value="8" min="0" max="23" style="width:90px"> h</div>
+          <div class="timePack">
+            <input type="text" id="startTime" value="08:00" placeholder="HH:MM"/>
+            <small>(vd 07:30)</small>
+          </div>
 
           <label>Kết thúc:</label>
-          <div><input type="number" id="end" value="20" min="0" max="23" style="width:90px"> h</div>
+          <div class="timePack">
+            <input type="text" id="endTime" value="20:00" placeholder="HH:MM"/>
+            <small>(vd 12:50)</small>
+          </div>
 
           <button onclick="addDay()">➕ Thêm ngày</button>
         </div>
 
         <div class="muted">
-          • Nghỉ <b>1 tiếng</b> tại <b>11:45</b> (ca ngày) và <b>23:45</b> (ca đêm).<br/>
-          • Ca đêm qua ngày (vd 20 → 8) tự tính đúng.<br/>
-          • Hỗ trợ <b>+10k</b> chỉ khi <b>Ngày thường + Ca ngày + 8→20</b> và đủ <b>11 giờ làm</b> (sau nghỉ).
+          • Nghỉ <b>1 tiếng</b> cố định: <b>11:45→12:45</b> (ca ngày), <b>23:45→00:45</b> (ca đêm).<br/>
+          • Nếu ca làm <b>không đè lên khoảng nghỉ</b> thì <b>KHÔNG</b> bị trừ (vd làm 08:00→11:45).<br/>
+          • Ca đêm qua ngày (vd 20:00 → 08:00) tự tính đúng.<br/>
+          • Hỗ trợ <b>+10k</b> chỉ khi <b>Ngày thường + Ca ngày + 08:00→20:00</b> và đủ <b>11 giờ làm</b> (sau nghỉ).
         </div>
       </div>
 
@@ -245,14 +203,17 @@
         <table>
           <thead>
             <tr>
-              <th>Thứ</th><th>Ngày</th><th>Bắt đầu</th><th>Kết thúc</th>
-              <th>Công nhân</th><th>HC</th><th>TC</th><th>Hỗ trợ</th><th>Tổng</th><th>Xóa</th>
+              <th>Thứ</th><th>Ngày</th>
+              <th>Bắt đầu</th><th>Kết thúc</th>
+              <th>Công nhân</th>
+              <th>Giờ làm</th>
+              <th>HC</th><th>TC</th><th>Hỗ trợ</th><th>Tổng</th><th>Xóa</th>
             </tr>
           </thead>
           <tbody id="rows"></tbody>
           <tfoot>
             <tr class="total">
-              <td colspan="5">TỔNG</td>
+              <td colspan="6">TỔNG</td>
               <td id="tHC">0</td><td id="tTC">0</td><td id="tB">0</td><td id="tSum">0</td><td></td>
             </tr>
           </tfoot>
@@ -281,10 +242,11 @@
   <!-- TAB: Stat -->
   <div id="tab-stat" style="display:none;">
     <h3>📊 Thống kê</h3>
+
     <div class="box">
       <div class="row">
         <b>Theo ngày</b>
-        <input type="date" id="statDate" />
+        <input type="date" id="statDate"/>
         <button onclick="statDay()">Xem</button>
       </div>
 
@@ -292,9 +254,9 @@
 
       <div class="row">
         <b>Theo tuần (T2 → CN)</b>
-        <input type="date" id="statWeekPick" onchange="syncWeekRange()" />
-        <span class="muted">Từ:</span><input type="date" id="statWeekFrom" readonly />
-        <span class="muted">Đến:</span><input type="date" id="statWeekTo" readonly />
+        <input type="date" id="statWeekPick" onchange="syncWeekRange()"/>
+        <span class="muted">Từ:</span><input type="date" id="statWeekFrom" readonly/>
+        <span class="muted">Đến:</span><input type="date" id="statWeekTo" readonly/>
         <button onclick="statWeek()">Xem</button>
       </div>
 
@@ -302,9 +264,9 @@
 
       <div class="row">
         <b>Theo tháng (đầu → cuối tháng)</b>
-        <input type="date" id="statMonthPick" onchange="syncMonthRange()" />
-        <span class="muted">Từ:</span><input type="date" id="statMonthFrom" readonly />
-        <span class="muted">Đến:</span><input type="date" id="statMonthTo" readonly />
+        <input type="date" id="statMonthPick" onchange="syncMonthRange()"/>
+        <span class="muted">Từ:</span><input type="date" id="statMonthFrom" readonly/>
+        <span class="muted">Đến:</span><input type="date" id="statMonthTo" readonly/>
         <button onclick="statMonth()">Xem</button>
       </div>
     </div>
@@ -320,20 +282,21 @@
       </table>
     </div>
   </div>
+
 </div>
 
 <div id="toast" class="toast">OK</div>
 
 <script>
-  let data = JSON.parse(localStorage.getItem("winsun")) || { workers: {}, history: [] };
-  if (!data || typeof data !== "object") data = { workers: {}, history: [] };
+  // ================== DATA ==================
+  let data = JSON.parse(localStorage.getItem("winsun")) || { workers:{}, history:[] };
+  if (!data || typeof data !== "object") data = { workers:{}, history:[] };
   if (!data.workers) data.workers = {};
   if (!data.history) data.history = [];
-  for (const id of Object.keys(data.workers)) {
-    if (!data.workers[id]) data.workers[id] = { name: "(unknown)", days: [] };
+  for (const id of Object.keys(data.workers)){
+    if (!data.workers[id]) data.workers[id] = { name:"(unknown)", days:[] };
     if (!data.workers[id].days) data.workers[id].days = [];
   }
-
   let current = null;
 
   function save(){ localStorage.setItem("winsun", JSON.stringify(data)); }
@@ -347,15 +310,22 @@
     clearTimeout(window.__toastTimer);
     window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 1200);
   }
-  function flashOk(){
-    const box = document.querySelector("#workArea .box");
-    if(!box) return;
-    box.classList.remove("flash-ok"); void box.offsetWidth; box.classList.add("flash-ok");
+
+  // ================== TIME HELPERS ==================
+  // parse "HH:MM" -> minutes (0..1439)
+  function parseHHMM(str){
+    const s = (str||"").trim();
+    const m = /^(\d{1,2})\s*:\s*(\d{1,2})$/.exec(s);
+    if (!m) return null;
+    const hh = +m[1], mm = +m[2];
+    if (hh<0 || hh>23 || mm<0 || mm>59) return null;
+    return hh*60 + mm;
   }
-  function shakeWorkArea(){
-    const wa = document.getElementById("workArea");
-    if(!wa) return;
-    wa.classList.remove("shake"); void wa.offsetWidth; wa.classList.add("shake");
+  function fmtHHMM(min){
+    min = ((min%1440)+1440)%1440;
+    const hh = Math.floor(min/60);
+    const mm = min%60;
+    return String(hh).padStart(2,"0")+":"+String(mm).padStart(2,"0");
   }
 
   function getThu(dateStr){
@@ -364,42 +334,27 @@
     return map[d.getDay()];
   }
 
-  // nghỉ 1 tiếng:
-  // ca ngày: 11:45→12:45
-  // ca đêm: 23:45→00:45
-  function calcWorkedHours(startHour, endHour, shiftType){
-    let start = startHour * 60;
-    let end = endHour * 60;
+  // ✅ TÍNH GIỜ LÀM THEO PHÚT + TRỪ ĐÚNG PHẦN NGHỈ NẾU CÓ ĐÈ LÊN
+  // Nghỉ: ca ngày 11:45-12:45, ca đêm 23:45-00:45
+  function calcWorkedMinutes(startMin, endMin, shiftType){
+    // chuyển về timeline có thể qua ngày
+    let start = startMin;
+    let end = endMin;
     if (end <= start) end += 1440;
 
     let breakStart = (shiftType === "dem") ? (23*60 + 45) : (11*60 + 45);
-    let breakEnd = breakStart + 60;
+    let breakEnd = breakStart + 60; // 1 tiếng
+
+    // đưa khoảng nghỉ lên đúng "ngày" của ca
     if (breakStart < start) { breakStart += 1440; breakEnd += 1440; }
 
+    // overlap phút giữa ca làm và giờ nghỉ
     const overlap = Math.max(0, Math.min(end, breakEnd) - Math.max(start, breakStart));
-    const workedMin = (end - start) - overlap;
-    return Math.max(0, workedMin / 60);
+    const worked = Math.max(0, (end - start) - overlap);
+    return worked;
   }
 
-  function getWeekRange(dateStr){
-    const d = new Date(dateStr);
-    const day = d.getDay();
-    const diff = (day === 0 ? -6 : 1) - day;
-    const monday = new Date(d); monday.setDate(d.getDate()+diff);
-    const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
-    return { start: toISO(monday), end: toISO(sunday) };
-  }
-  function getMonthRange(dateStr){
-    const d = new Date(dateStr);
-    const start = new Date(d.getFullYear(), d.getMonth(), 1);
-    const end = new Date(d.getFullYear(), d.getMonth()+1, 0);
-    return { start: toISO(start), end: toISO(end) };
-  }
-
-  function makeId(){
-    return "w_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8);
-  }
-
+  // ================== UI TABS ==================
   function showTab(tab, ev){
     document.getElementById("tab-salary").style.display = "none";
     document.getElementById("tab-history").style.display = "none";
@@ -410,13 +365,15 @@
     if (ev && ev.target) ev.target.classList.add("active");
   }
 
-  // ✅ FIX: workArea.style.display = "block" (không dùng boolean)
+  // ================== WORKERS ==================
+  function makeId(){ return "w_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8); }
+
   function renderWorkerTabs(){
     const wrap = document.getElementById("workerTabs");
     const workArea = document.getElementById("workArea");
     wrap.innerHTML = "";
 
-    const search = (document.getElementById("workerSearch")?.value || "").trim().toLowerCase();
+    const search = (document.getElementById("workerSearch").value || "").trim().toLowerCase();
     const ids = Object.keys(data.workers);
 
     if (ids.length === 0){
@@ -439,15 +396,11 @@
       return;
     }
 
-    filtered.forEach(({id,name}) => {
+    filtered.forEach(({id,name})=>{
       const btn = document.createElement("button");
       btn.className = (id === current) ? "active" : "";
-      btn.textContent = name; // ✅ không hiện CN001
-      btn.onclick = () => {
-        current = id;
-        renderWorkerTabs();
-        showToast("Đang chọn: " + name);
-      };
+      btn.textContent = name; // không hiện CN
+      btn.onclick = ()=>{ current=id; renderWorkerTabs(); showToast("Đang chọn: " + name); };
       wrap.appendChild(btn);
     });
 
@@ -457,9 +410,9 @@
 
   function addWorker(){
     const name = document.getElementById("workerName").value.trim();
-    if (!name){ showToast("Nhập tên công nhân"); shakeWorkArea(); return; }
-    if (Object.values(data.workers).some(w => (w?.name || "").toLowerCase() === name.toLowerCase())){
-      showToast("Tên đã tồn tại"); shakeWorkArea(); return;
+    if (!name) return showToast("Nhập tên công nhân");
+    if (Object.values(data.workers).some(w => (w?.name||"").toLowerCase() === name.toLowerCase())){
+      return showToast("Tên đã tồn tại");
     }
     const id = makeId();
     data.workers[id] = { name, days: [] };
@@ -480,7 +433,7 @@
     if (!name) return;
 
     if (Object.entries(data.workers).some(([id,w]) => id !== current && (w?.name||"").toLowerCase() === name.toLowerCase())){
-      showToast("Tên bị trùng"); return;
+      return showToast("Tên bị trùng");
     }
 
     data.workers[current].name = name;
@@ -495,7 +448,7 @@
   function deleteWorker(){
     if (!current || !data.workers[current]) return showToast("Chưa chọn công nhân");
     const name = data.workers[current].name;
-    const ok = confirm("XÓA công nhân: " + name + " ?\nSẽ xóa luôn toàn bộ ngày công của người này.");
+    const ok = confirm("XÓA công nhân: " + name + " ?\nSẽ xóa luôn toàn bộ ngày công.");
     if (!ok) return;
 
     delete data.workers[current];
@@ -508,66 +461,97 @@
     showToast("🗑️ Đã xóa công nhân");
   }
 
+  // ================== PAY RULES ==================
+  // Bảng lương như bạn chốt:
+  // Ngày thường:  Ca ngày: HC 25k, TC 30k ; Ca đêm: HC 30k, TC 35k
+  // Chủ nhật:     Ca ngày: 35k/giờ ; Ca đêm: 45k/giờ ; (không tách TC)
+  function getRates(dayType, shiftType){
+    if (dayType === "thuong"){
+      if (shiftType === "ngay") return { hc:25000, tc:30000, sundayFlat:false };
+      return { hc:30000, tc:35000, sundayFlat:false };
+    } else { // chunhat
+      if (shiftType === "ngay") return { flat:35000, sundayFlat:true };
+      return { flat:45000, sundayFlat:true };
+    }
+  }
+
   function addDay(){
-    if (!current || !data.workers[current]) { showToast("Chưa chọn công nhân"); shakeWorkArea(); return; }
+    if (!current || !data.workers[current]) return showToast("Chưa chọn công nhân");
 
     const d = document.getElementById("date").value || toISO(new Date());
-    const dayType = document.getElementById("dayType").value;
-    const shiftType = document.getElementById("shiftType").value;
-    const s = +document.getElementById("start").value;
-    const e = +document.getElementById("end").value;
+    const dayType = document.getElementById("dayType").value;     // thuong / chunhat
+    const shiftType = document.getElementById("shiftType").value; // ngay / dem
+    const st = parseHHMM(document.getElementById("startTime").value);
+    const en = parseHHMM(document.getElementById("endTime").value);
 
-    if (Number.isNaN(s) || Number.isNaN(e) || s < 0 || s > 23 || e < 0 || e > 23){
-      showToast("Giờ không hợp lệ"); shakeWorkArea(); return;
-    }
+    if (st === null || en === null) return showToast("Sai giờ. Nhập dạng HH:MM (vd 08:00, 12:50)");
 
-    const workedHours = calcWorkedHours(s, e, shiftType);
+    const workedMin = calcWorkedMinutes(st, en, shiftType);
+    const workedHours = workedMin / 60; // có thể lẻ như 1.34h
 
-    let hcRate = 0, tcRate = 0;
-    if (dayType === "thuong"){
-      hcRate = (shiftType === "ngay") ? 25000 : 30000;
-      tcRate = (shiftType === "ngay") ? 30000 : 35000;
+    const rates = getRates(dayType, shiftType);
+
+    let hc = 0, tc = 0;
+
+    if (rates.sundayFlat){
+      // Chủ nhật: trả theo 1 giá/giờ, vẫn tính theo phút
+      hc = Math.round(workedHours * rates.flat);
+      tc = 0;
     } else {
-      hcRate = (shiftType === "ngay") ? 35000 : 45000;
-      tcRate = 0;
+      // Ngày thường: tách 8h đầu = HC, phần còn lại = TC (tính theo phút)
+      const hcMin = Math.min(8*60, workedMin);
+      const tcMin = Math.max(0, workedMin - 8*60);
+      hc = Math.round((hcMin/60) * rates.hc);
+      tc = Math.round((tcMin/60) * rates.tc);
     }
 
-    const hcHours = Math.min(8, workedHours);
-    const tcHours = Math.max(0, workedHours - 8);
+    // +10k hỗ trợ: ngày thường + ca ngày + đúng 08:00→20:00 + đủ 11 giờ làm (sau nghỉ)
+    const bonus = (dayType==="thuong" && shiftType==="ngay" && st===8*60 && en===20*60 && workedMin >= 11*60) ? 10000 : 0;
 
-    const hc = Math.round(hcHours * hcRate);
-    const tc = Math.round(tcHours * tcRate);
-    const bonus = (dayType === "thuong" && shiftType === "ngay" && s === 8 && e === 20 && workedHours >= 11) ? 10000 : 0;
     const total = hc + tc + bonus;
 
     data.workers[current].days.push({
-      d, thu: getThu(d), start: s, end: e,
-      dayType, shiftType, workedHours,
+      d,
+      thu: getThu(d),
+      shiftType,
+      dayType,
+      startMin: st,
+      endMin: en,
+      workedMin,
       hc, tc, bonus, total
     });
 
+    // history: chỉ giữ hôm nay
     const today = toISO(new Date());
     data.history.unshift({
       time: new Date().toLocaleTimeString(),
-      date: d, thu: getThu(d),
+      date: d,
+      thu: getThu(d),
       workerId: current,
       name: data.workers[current].name,
       shift: shiftType,
-      start: s, end: e
+      start: fmtHHMM(st),
+      end: fmtHHMM(en)
     });
     data.history = data.history.filter(x => x.date === today);
 
     save();
     loadWorker();
     renderHistory();
-    flashOk();
     showToast("✅ Đã thêm ngày");
+  }
+
+  // ================== RENDER SALARY TABLE ==================
+  function fmtMoney(n){ return (n||0).toLocaleString("vi-VN"); }
+
+  function fmtWorked(workedMin){
+    const h = Math.floor(workedMin/60);
+    const m = workedMin%60;
+    return `${h}h${String(m).padStart(2,"0")}`;
   }
 
   function loadWorker(){
     const rows = document.getElementById("rows");
-    if (!rows) return;
-
     if (!current || !data.workers[current]){
       rows.innerHTML = "";
       document.getElementById("tHC").innerText = "0";
@@ -579,45 +563,44 @@
 
     const w = data.workers[current];
     const days = w.days || [];
+
     let html="", sHC=0,sTC=0,sB=0,sT=0;
 
-    days.forEach((x,i) => {
-      const hc=x.hc||0, tc=x.tc||0, b=x.bonus||0, t=x.total||0;
+    days.forEach((x,i)=>{
       html += `
         <tr>
-          <td>${x.thu}</td><td>${x.d}</td><td>${x.start}h</td><td>${x.end}h</td>
+          <td>${x.thu}</td>
+          <td>${x.d}</td>
+          <td>${fmtHHMM(x.startMin)}</td>
+          <td>${fmtHHMM(x.endMin)}</td>
           <td>${w.name}</td>
-          <td>${hc.toLocaleString()}</td>
-          <td>${tc.toLocaleString()}</td>
-          <td>${b.toLocaleString()}</td>
-          <td><b>${t.toLocaleString()}</b></td>
+          <td><b>${fmtWorked(x.workedMin)}</b></td>
+          <td>${fmtMoney(x.hc)}</td>
+          <td>${fmtMoney(x.tc)}</td>
+          <td>${fmtMoney(x.bonus)}</td>
+          <td><b>${fmtMoney(x.total)}</b></td>
           <td><button class="danger" onclick="delDay(${i})">✖</button></td>
-        </tr>`;
-      sHC+=hc; sTC+=tc; sB+=b; sT+=t;
+        </tr>
+      `;
+      sHC+=x.hc||0; sTC+=x.tc||0; sB+=x.bonus||0; sT+=x.total||0;
     });
 
     rows.innerHTML = html;
-    document.getElementById("tHC").innerText = sHC.toLocaleString();
-    document.getElementById("tTC").innerText = sTC.toLocaleString();
-    document.getElementById("tB").innerText  = sB.toLocaleString();
-    document.getElementById("tSum").innerText= sT.toLocaleString();
+    document.getElementById("tHC").innerText = fmtMoney(sHC);
+    document.getElementById("tTC").innerText = fmtMoney(sTC);
+    document.getElementById("tB").innerText  = fmtMoney(sB);
+    document.getElementById("tSum").innerText= fmtMoney(sT);
   }
 
   function delDay(i){
     if (!current || !data.workers[current]) return;
-    const tr = document.querySelectorAll("#rows tr")[i];
-    if (tr){
-      tr.classList.add("fade-out");
-      setTimeout(()=>{
-        data.workers[current].days.splice(i,1);
-        save(); loadWorker(); showToast("🗑️ Đã xoá");
-      }, 220);
-    } else {
-      data.workers[current].days.splice(i,1);
-      save(); loadWorker(); showToast("🗑️ Đã xoá");
-    }
+    data.workers[current].days.splice(i,1);
+    save();
+    loadWorker();
+    showToast("🗑️ Đã xoá");
   }
 
+  // ================== HISTORY ==================
   function renderHistory(){
     const tb = document.getElementById("history");
     const list = data.history || [];
@@ -626,11 +609,27 @@
         <td>${h.time}</td>
         <td>${h.thu} - ${h.date}</td>
         <td>${h.name}</td>
-        <td>${h.shift === "ngay" ? "Ca ngày" : "Ca đêm"}</td>
-        <td>${h.start}h</td>
-        <td>${h.end}h</td>
+        <td>${h.shift==="ngay" ? "Ca ngày" : "Ca đêm"}</td>
+        <td>${h.start}</td>
+        <td>${h.end}</td>
       </tr>
     `).join("");
+  }
+
+  // ================== STATS ==================
+  function getWeekRange(dateStr){
+    const d = new Date(dateStr);
+    const day = d.getDay(); // 0=CN
+    const diff = (day === 0 ? -6 : 1) - day; // về T2
+    const monday = new Date(d); monday.setDate(d.getDate()+diff);
+    const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
+    return { start: toISO(monday), end: toISO(sunday) };
+  }
+  function getMonthRange(dateStr){
+    const d = new Date(dateStr);
+    const start = new Date(d.getFullYear(), d.getMonth(), 1);
+    const end = new Date(d.getFullYear(), d.getMonth()+1, 0);
+    return { start: toISO(start), end: toISO(end) };
   }
 
   function statDay(){
@@ -638,18 +637,19 @@
     if (!d) return showToast("Chọn ngày");
 
     let hc=0, tc=0, b=0, sum=0;
-    Object.values(data.workers).forEach(w => (w.days||[]).forEach(x => {
+    Object.values(data.workers).forEach(w => (w.days||[]).forEach(x=>{
       if (x.d===d){ hc+=x.hc||0; tc+=x.tc||0; b+=x.bonus||0; sum+=x.total||0; }
     }));
 
     document.getElementById("statTable").innerHTML = `
       <tr class="total">
         <td>Ngày: ${getThu(d)} - ${d}</td>
-        <td>${hc.toLocaleString()}</td>
-        <td>${tc.toLocaleString()}</td>
-        <td>${b.toLocaleString()}</td>
-        <td><b>${sum.toLocaleString()}</b></td>
-      </tr>`;
+        <td>${fmtMoney(hc)}</td>
+        <td>${fmtMoney(tc)}</td>
+        <td>${fmtMoney(b)}</td>
+        <td><b>${fmtMoney(sum)}</b></td>
+      </tr>
+    `;
     showToast("📊 Đã thống kê ngày");
   }
 
@@ -669,18 +669,19 @@
     document.getElementById("statWeekTo").value = r.end;
 
     let hc=0, tc=0, b=0, sum=0;
-    Object.values(data.workers).forEach(w => (w.days||[]).forEach(x => {
+    Object.values(data.workers).forEach(w => (w.days||[]).forEach(x=>{
       if (x.d>=r.start && x.d<=r.end){ hc+=x.hc||0; tc+=x.tc||0; b+=x.bonus||0; sum+=x.total||0; }
     }));
 
     document.getElementById("statTable").innerHTML = `
       <tr class="total">
         <td>Tuần: ${r.start} → ${r.end}</td>
-        <td>${hc.toLocaleString()}</td>
-        <td>${tc.toLocaleString()}</td>
-        <td>${b.toLocaleString()}</td>
-        <td><b>${sum.toLocaleString()}</b></td>
-      </tr>`;
+        <td>${fmtMoney(hc)}</td>
+        <td>${fmtMoney(tc)}</td>
+        <td>${fmtMoney(b)}</td>
+        <td><b>${fmtMoney(sum)}</b></td>
+      </tr>
+    `;
     showToast("📊 Đã thống kê tuần");
   }
 
@@ -700,28 +701,33 @@
     document.getElementById("statMonthTo").value = r.end;
 
     let hc=0, tc=0, b=0, sum=0;
-    Object.values(data.workers).forEach(w => (w.days||[]).forEach(x => {
+    Object.values(data.workers).forEach(w => (w.days||[]).forEach(x=>{
       if (x.d>=r.start && x.d<=r.end){ hc+=x.hc||0; tc+=x.tc||0; b+=x.bonus||0; sum+=x.total||0; }
     }));
 
     document.getElementById("statTable").innerHTML = `
       <tr class="total">
         <td>Tháng: ${r.start} → ${r.end}</td>
-        <td>${hc.toLocaleString()}</td>
-        <td>${tc.toLocaleString()}</td>
-        <td>${b.toLocaleString()}</td>
-        <td><b>${sum.toLocaleString()}</b></td>
-      </tr>`;
+        <td>${fmtMoney(hc)}</td>
+        <td>${fmtMoney(tc)}</td>
+        <td>${fmtMoney(b)}</td>
+        <td><b>${fmtMoney(sum)}</b></td>
+      </tr>
+    `;
     showToast("📊 Đã thống kê tháng");
   }
 
+  // ================== INIT ==================
   (function init(){
     const today = toISO(new Date());
     document.getElementById("date").value = today;
+
     document.getElementById("statDate").value = today;
     document.getElementById("statWeekPick").value = today;
     document.getElementById("statMonthPick").value = today;
-    syncWeekRange(); syncMonthRange();
+    syncWeekRange();
+    syncMonthRange();
+
     renderWorkerTabs();
     renderHistory();
   })();
